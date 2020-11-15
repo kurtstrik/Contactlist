@@ -1,0 +1,32 @@
+<resources>
+    <string name="app_name">Contactlist</string>
+
+    <string name="surname">surname</string>
+
+    <string name="familyname">family name</string>
+    <string name="address">address</string>
+    <string name="email"> e-mail </string>
+    <string name="tel"> telephone </string>
+    <string name="birth">birth date</string>
+    <string name="edittime"> edited at </string>
+    <string name="password">password</string>
+    <string name="enter">enter</string>
+    <string name="cancel">cancel</string>
+
+    <string name="insert">insert here</string>
+    <string name="newcontact">new contact</string>
+    <string name="added">contact added</string>
+
+    <string name="search">search for contact</string>
+
+    <string-array name="Options">
+        <item>edit</item>
+        <item>delete</item>
+
+    </string-array>
+
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="not_added">Error! Contact NOT added</string>
+</resources>

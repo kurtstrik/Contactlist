@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Kontaktliste</string>
+    <string name="surname">Vorname</string>
+    <string name="familyname">Familien Name</string>
+    <string name="address">Adresse</string>
+    <string name="email"> e-mail </string>
+    <string name="tel"> Telefonnummer </string>
+    <string name="birth">Geburtsdatum</string>
+    <string name="edittime"> bearbeitet zuletzt </string>
+    <string name="password">Passwort</string>
+    <string name="enter">Eingabe</string>
+    <string name="cancel">Abbruch</string>
+
+    <string name="insert">hier eingeben</string>
+    <string name="hello_blank_fragment">hello</string>
+    <string name="search">Suchbegriff eingeben</string>
+    <string name="newcontact">Neuer Kontakt</string>
+    <string name="added">Kontakt hinzugefügt</string>
+    <string name="not_added">Fehler! Kontakt nicht erstellt!</string>
+
+    <string-array name="Options">
+        <item>Bearbeiten</item>
+        <item>Löschen</item>
+
+    </string-array>
+
+</resources>
