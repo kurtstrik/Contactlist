@@ -1,26 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/blanklinear"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:weightSum="10"
     tools:context="BlankFragment">
 
-    <ImageButton
-        android:id="@+id/imageButton"
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="3"
+        android:layout_weight="1">
 
-        tools:src="@tools:sample/avatars" />
+        <ImageButton
+            android:id="@+id/imageButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:adjustViewBounds="false"
+            android:background="@color/white"
+            android:cropToPadding="false"
+            android:scaleType="fitCenter"
+            android:src="@mipmap/ic_contact_round"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="6"
-        >
+        android:layout_weight="8">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -202,27 +217,33 @@
 
         <Button
             android:id="@+id/cancel"
-            style="@android:style/Widget.Holo.Button"
+            style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
 
+            android:layout_gravity="center"
             android:layout_weight="0.5"
-
+            android:backgroundTint="@color/grey"
             android:fontFamily="@font/alef"
+            android:paddingTop="1dp"
+            android:paddingBottom="1dp"
             android:text="@string/cancel" />
 
         <Button
             android:id="@+id/enter"
-            style="@android:style/Widget.Holo.Button"
+            style="@style/Widget.AppCompat.Button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
+            android:layout_gravity="center"
+
+            android:layout_marginBottom="1dp"
             android:layout_weight="0.5"
             android:backgroundTint="@color/black"
-
             android:fontFamily="@font/alef"
-            android:text="@string/enter" />
+            android:paddingTop="1dp"
+            android:paddingBottom="1dp"
+            android:text="@string/enter"
+            android:textColor="@color/white" />
     </TableRow>
 
 </LinearLayout>

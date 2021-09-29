@@ -2,19 +2,17 @@ package com.example.contactlist
 
 
 import android.content.Context
-import android.content.DialogInterface
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView.OnItemLongClickListener
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ListView
-import android.widget.Toast
+import android.widget.*
+
 
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
@@ -28,13 +26,16 @@ import androidx.fragment.app.Fragment
  * interface.
  */
 class InputFragment : Fragment() {
-   private var field: EditText? = null
-   private var press: Button? = null
-   private var del: Button? = null
-   private var upd: Button? = null
+   lateinit var field: EditText
+   lateinit var press: Button
+   lateinit var del: Button
+   lateinit var refresh: Button
+   lateinit var upd:Button
+  // lateinit var img: ImageView
    lateinit var entries:ListView
    lateinit var mContext:Context
 
+   private val pickImage = 100
   //  https://androidexample.com/How_To_Create_A_Custom_Listview_-_Android_Example/index.php?view=article_discription&aid=67&aaid=92
   //  var adapter: ArrayAdapter<*> = ArrayAdapter<String>(this, R.layout.ListView, StringArray)
 
@@ -67,7 +68,9 @@ class InputFragment : Fragment() {
         field = view.findViewById<View>(R.id.searchtext) as EditText
         entries = view.findViewById<View>(R.id.listentries) as ListView
         del = view.findViewById<View>(R.id.delete) as Button
+        refresh =  view.findViewById<View>(R.id.refresh) as Button
         upd =  view.findViewById<View>(R.id.update) as Button
+
 
 
         //https://developer.android.com/guide/topics/ui/dialogs
@@ -87,7 +90,7 @@ class InputFragment : Fragment() {
                 when(which){
                     0->{ //1st element of Options array
                         //Toast.makeText(mContext, "edit selected" , Toast.LENGTH_SHORT).show()
-                        (activity as MainActivity).gotoform()
+                        (activity as MainActivity).passData(selectedItem)
                          }
                     1->{//2nd element of Options array
                         //Toast.makeText(mContext, "delete selected" , Toast.LENGTH_SHORT).show()
@@ -107,10 +110,12 @@ class InputFragment : Fragment() {
            true//set true, because we only want this listener to react
         }
 
-        entries.setOnItemClickListener{ parent, view, position, id ->
-            val selectedItem =  parent.getItemAtPosition(position) as String
+        /*entries.setOnItemClickListener{ parent, view, position, id ->
+            val selectedItem =  parent.getItemAtPosition(position) as Contact
 
-        }
+
+            (activity as MainActivity).details(selectedItem)
+        }*/
 
         var list = mutableListOf<Contact>()
 
@@ -140,24 +145,31 @@ class InputFragment : Fragment() {
            entries.adapter = CustomAdapter(mContext,R.layout.fragment_input,newlist)
        }
 
-       upd!!.setOnClickListener {
-           val newlist =  (activity as MainActivity).getcontacts()
-         //  entries = view.findViewById<View>(R.id.listentries) as ListView
-           entries.adapter = CustomAdapter(mContext,R.layout.fragment_input,newlist)
+       refresh!!.setOnClickListener {
+
+         actualize()
+         //  val newlist =  (activity as MainActivity).getcontacts()
+         //  entries.adapter = CustomAdapter(mContext,R.layout.fragment_input,newlist)
        }
+
+        upd!!.setOnClickListener {
+            val newlist =  (activity as MainActivity).getcontacts()
+            entries.adapter = CustomAdapter(mContext,R.layout.fragment_input,newlist)
+        }
 
         //https://guides.codepath.com/android/Basic-Event-Listeners#edittext-common-listeners
        field!!.addTextChangedListener(object : TextWatcher {
            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                // Fires right as the text is being changed (even supplies the range of text)
-               val newlist =  (activity as MainActivity).getcontacts()
-
-
-
                if(s.toString()==""){
-
+                   val newlist =  (activity as MainActivity).getcontacts()
                    entries.adapter = CustomAdapter(mContext,R.layout.fragment_input,newlist)
 
+               }
+               else{
+                   val con = Contact(s.toString())
+                   val newlist = (activity as MainActivity).search(con)
+                   entries.adapter = CustomAdapter(mContext,R.layout.fragment_input,newlist)
                }
 
            }
@@ -174,6 +186,14 @@ class InputFragment : Fragment() {
 
 
         return view
+    }
+
+
+    fun actualize(){
+        val newlist =  (activity as MainActivity).getcontacts()
+        //  entries = view.findViewById<View>(R.id.listentries) as ListView
+        entries.adapter = CustomAdapter(mContext,R.layout.fragment_input,newlist)
+
     }
 
     fun updatelist(list:List<Contact>){

@@ -1,33 +1,100 @@
 package com.example.contactlist
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
+import android.content.res.Resources
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
+import android.provider.MediaStore
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.graphics.drawable.toBitmap
+import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
+import com.bumptech.glide.Glide
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.InputStream
 
-
+//formular view of selected contact - fragment
 class BlankFragment : Fragment() {
 
-    var cancel: Button? = null
-    var enter: Button? = null
+    lateinit var cancel:Button
+    lateinit var enter:Button
 
 
-    /*
+    var c_id:Int = 0
+    lateinit var surname:EditText
+    lateinit var familyname:EditText
+    lateinit var adress:EditText
+    lateinit var email:EditText
+    lateinit var telephone:EditText
 
-    private var surname: EditText? = null
-    private var familyname: EditText? = null
-    private var adress: EditText? = null
-    private var email: EditText? = null
-    private var telephone: EditText? = null
-    private var birthdate: DatePicker? = null
-    private var edited: TextView? = null
-    private var password: EditText? = null
-*/
+    lateinit var birthdate:DatePicker
+    lateinit var linear:LinearLayout
+    lateinit var img:ImageButton
+
+    lateinit var edited:TextView
+    lateinit var password:EditText
+    lateinit var filename:Uri
+
+    var updated:Boolean = false
+
+    private val pickImage = 100
+    val gallery = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
+
+    //https://stackoverflow.com/questions/61455381/how-to-replace-startactivityforresult-with-activity-result-apis
+
+
+
+    var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            // There are no request codes
+            val data: Intent? = result.data
+            //val what: Bitmap? = BitmapFactory.decodeFile(data?.dataString)
+
+
+           if(data?.data!=null) {
+
+               var bitmapfile = context?.contentResolver?.openInputStream(data?.data)
+               filename = data?.data
+
+               var draw: BitmapDrawable = BitmapDrawable(this.resources, bitmapfile)
+
+
+
+               if (draw != null) {
+
+                    Glide.with(this).load(draw).override(100,100).circleCrop().into(img)
+                   //Glide.with(this).load(draw).override(200,200).centerCrop().into(img)
+                   //Glide.with(this).load(draw).into(img)
+
+                   //img.setImageDrawable(BitmapDrawable(resources,decodeSampledBitmapFromResource(draw, R.id.imageButton, 100, 100)))
+               }
+               //img.setImageDrawable(draw)
+
+           }
+
+        }
+    }
+
+    fun openSomeActivityForResult() {
+        val gallery = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
+        resultLauncher.launch(gallery)
+    }
+
+
     private var mListener: OnFragmentInteractionListener? = null
 
     private var softInputMode:Int? = null
@@ -53,74 +120,127 @@ class BlankFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,savedInstanceState: Bundle?): View? { // Inflate the layout for this fragment
         val view =
             inflater.inflate(R.layout.fragment_blank, container, false) as ViewGroup
-/*
-        surname = view.findViewById<View>(R.id.surname) as EditText
-        familyname = view.findViewById<View>(R.id.familyname) as EditText
-        adress = view.findViewById<View>(R.id.adress) as EditText
-        email = view.findViewById<View>(R.id.email) as EditText
-        telephone = view.findViewById<View>(R.id.tel) as EditText
-        birthdate = view.findViewById<View>(R.id.datepick) as DatePicker
-        edited = view.findViewById<View>(R.id.textViewEdit) as TextView
-        password = view.findViewById<View>(R.id.password) as EditText
-*/
+        linear = view.findViewById(R.id.blanklinear) as LinearLayout
 
+       img = view.findViewById(R.id.imageButton)
 
+        img.setOnClickListener{
+        //https://www.tutorialspoint.com/how-to-pick-an-image-from-an-image-gallery-on-android-using-kotlin
 
+            openSomeActivityForResult()
 
-        enter = view.findViewById<View>(R.id.enter) as Button
-        enter!!.setOnClickListener {
-          val surname = view.findViewById<View>(R.id.surname) as EditText
-          val familyname = view.findViewById<View>(R.id.familyname) as EditText
-          val adress = view.findViewById<View>(R.id.adress) as EditText
-          val email = view.findViewById<View>(R.id.email) as EditText
-          val telephone = view.findViewById<View>(R.id.tel) as EditText
-          val birthdate = view.findViewById<View>(R.id.datepick) as DatePicker
-          val edited = view.findViewById<View>(R.id.textViewEdit) as TextView
-          val password = view.findViewById<View>(R.id.password) as EditText
-
-
-           val dateString =""+ birthdate.dayOfMonth+"."+birthdate.month+"."+birthdate.year
-
-           // val mPager = view.findViewById<View>(R.id.pager) as ViewPager
-           // val page = mPager.adapter.
-
-            val result = (activity as MainActivity).addcontact(Contact(0,surname.text.toString(),familyname.text.toString(), adress.text.toString(), email.text.toString(),telephone.text.toString(),dateString, edited.text.toString(), password.text.toString()))
-
-            if(result==1L)
-                Toast.makeText(mContext, R.string.added , Toast.LENGTH_SHORT).show()
-            else
-                Toast.makeText(mContext, R.string.added , Toast.LENGTH_SHORT).show()
-
+            //val gallery = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
+            //(activity as MainActivity).startActivityForResult(gallery, pickImage)
         }
-        cancel = view.findViewById<View>(R.id.cancel) as Button
+
+
+        enter = view.findViewById(R.id.enter) as Button
+        enter!!.setOnClickListener {
+          surname = view.findViewById(R.id.surname) as EditText
+          familyname = view.findViewById(R.id.familyname) as EditText
+          adress = view.findViewById(R.id.adress) as EditText
+          email = view.findViewById(R.id.email) as EditText
+          telephone = view.findViewById(R.id.tel) as EditText
+          birthdate = view.findViewById(R.id.datepick) as DatePicker
+          edited = view.findViewById(R.id.textViewEdit) as TextView
+          password = view.findViewById(R.id.password) as EditText
+
+
+
+
+           var dateString =""+ birthdate.dayOfMonth+"."+(birthdate.month+1)+"."+birthdate.year
+
+           // val mPager = view.findViewById(R.id.pager) as ViewPager
+           // val page = mPager.adapter.
+            lateinit var contactprop:Contact
+
+            if(img!=null){
+
+                //https://stackoverflow.com/questions/6341977/convert-drawable-to-blob-datatype
+                val hold:BitmapDrawable? = img.drawable as? BitmapDrawable
+                var bitmap:Bitmap? = hold?.bitmap
+                var stream:ByteArrayOutputStream = ByteArrayOutputStream()
+                bitmap?.compress(Bitmap.CompressFormat.JPEG,100,stream)
+
+                val imgInByte:ByteArray = stream.toByteArray()
+
+                contactprop = Contact(
+                    c_id, surname.text.toString(),
+                    familyname.text.toString(),
+                    adress.text.toString(),
+                    email.text.toString(),
+                    telephone.text.toString(),
+                    dateString,
+                    edited.text.toString(),
+                    password.text.toString(),
+                    imgInByte,
+                )
+
+            }
+            else {
+                contactprop = Contact(
+                    c_id, surname.text.toString(),
+                    familyname.text.toString(),
+                    adress.text.toString(),
+                    email.text.toString(),
+                    telephone.text.toString(),
+                    dateString,
+                    edited.text.toString(),
+                    password.text.toString()
+                )
+            }
+           if(updated) {
+               val result = (activity as MainActivity).updatecontact(contactprop)
+
+               updated = false//!!!was tun wenn wiederholte Eingabe erfolgt? update nur false wenn screen verlassen wird
+
+               if (result == 1)
+                   Toast.makeText(mContext, "Contact updated", Toast.LENGTH_SHORT).show()
+               else
+                   Toast.makeText(mContext, "Contact not updated", Toast.LENGTH_SHORT).show()
+
+               //(activity as MainActivity).backbutton()
+
+           }
+            else {
+
+               val result = (activity as MainActivity).addcontact(contactprop)
+
+               if (result != 0L)
+                   Toast.makeText(mContext, R.string.added, Toast.LENGTH_SHORT).show()
+               else
+                   Toast.makeText(mContext, "Contact not added", Toast.LENGTH_SHORT).show()
+           }
+        }
+        cancel = view.findViewById(R.id.cancel) as Button
         cancel!!.setOnClickListener {
 
-            val surname = view.findViewById<View>(R.id.surname) as EditText
+            surname = view.findViewById(R.id.surname) as EditText
             surname.setText(null) //clear the value of the text
             surname.setHint(R.string.insert)//then refill the hint with initial value
 
-            val familyname = view.findViewById<View>(R.id.familyname) as EditText
+            familyname = view.findViewById(R.id.familyname) as EditText
             familyname.setText(null)
             familyname.setHint(R.string.insert)
 
-            val adress = view.findViewById<View>(R.id.adress) as EditText
+            adress = view.findViewById(R.id.adress) as EditText
             adress.setText(null)
             adress.setHint(R.string.insert)
 
-            val email = view.findViewById<View>(R.id.email) as EditText
+            email = view.findViewById(R.id.email) as EditText
             email.setText(null)
             email.setHint(R.string.insert)
 
-            val telephone = view.findViewById<View>(R.id.tel) as EditText
+            telephone = view.findViewById(R.id.tel) as EditText
             telephone.setText(null)
             telephone.setHint(R.string.insert)
 
 
-            val edited = view.findViewById<View>(R.id.textViewEdit) as TextView
+            edited = view.findViewById(R.id.textViewEdit) as TextView
             edited.setText(null)
             edited.setHint("")
 
-            val password = view.findViewById<View>(R.id.password) as EditText
+            password = view.findViewById(R.id.password) as EditText
             password.setText(null)
             password.setHint(R.string.insert)
 
@@ -156,9 +276,130 @@ class BlankFragment : Fragment() {
       //  softInputMode?.let { activity?.window?.setSoftInputMode(it) }
     }
 
+    public fun cancel(){
+        val surname = view?.findViewById(R.id.surname) as EditText
+        surname.setText(null) //clear the value of the text
+        surname.setHint(R.string.insert)//then refill the hint with initial value
+
+        val familyname = view?.findViewById(R.id.familyname) as EditText
+        familyname.setText(null)
+        familyname.setHint(R.string.insert)
+
+        val adress = view?.findViewById(R.id.adress) as EditText
+        adress.setText(null)
+        adress.setHint(R.string.insert)
+
+        val email = view?.findViewById(R.id.email) as EditText
+        email.setText(null)
+        email.setHint(R.string.insert)
+
+        val telephone = view?.findViewById(R.id.tel) as EditText
+        telephone.setText(null)
+        telephone.setHint(R.string.insert)
+
+
+        val edited = view?.findViewById(R.id.textViewEdit) as TextView
+        edited.setText(null)
+        edited.setHint("")
+
+        val password = view?.findViewById(R.id.password) as EditText
+        password.setText(null)
+        password.setHint(R.string.insert)
+
+
+
+    }
+
+    public fun updating(con:Contact){
+
+        updated = true
+
+        c_id = con.id//ID handling?
+
+        val surnamecurrent = view?.findViewById(R.id.surname) as EditText
+        surnamecurrent?.setText(con.surname)
+
+        val famnamecurrent = view?.findViewById(R.id.familyname) as EditText
+        famnamecurrent?.setText(con.famname)
+
+        val adresscurrent = view?.findViewById(R.id.adress) as EditText
+        adresscurrent?.setText(con.adress)
+
+        val emailcurrent = view?.findViewById(R.id.email) as EditText
+        emailcurrent?.setText(con.userEmail)
+
+        val telcurrent = view?.findViewById(R.id.tel) as EditText
+        telcurrent?.setText(con.telephone)
+
+      //
+
+    //   birthcurrent.dayOfMonth = con.birthdate.
+    //       birthcurrent.month =
+    //  birthcurrent.year =
+
+        /*val strs = con.birthdate.split(".").toTypedArray() Problem!
+        var birthcurrent = view?.findViewById<DatePicker>(R.id.datepick)
+        birthcurrent?.updateDate(strs[2].toInt(), strs[1].toInt(), strs[0].toInt())
+
+
+        val editcurrent = view?.findViewById<TextView>(R.id.textViewEdit) Problem!
+        editcurrent?.setText(con.edited)
+
+        password?.setText(con.pass) Problem!
+*/
+    }
+
+    public fun isonUpdate(bool:Boolean){
+        updated = bool
+    }
+
 
     interface OnFragmentInteractionListener {
 
         fun onFragmentInteraction(uri: Uri?)
     }
+
+    //https://developer.android.com/topic/performance/graphics/load-bitmap#kotlin
+    fun calculateInSampleSize(options: BitmapFactory.Options, reqWidth: Int, reqHeight: Int): Int {
+        // Raw height and width of image
+        val (height: Int, width: Int) = options.run { outHeight to outWidth }
+        var inSampleSize = 1
+
+        if (height > reqHeight || width > reqWidth) {
+
+            val halfHeight: Int = height / 2
+            val halfWidth: Int = width / 2
+
+            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
+            // height and width larger than the requested height and width.
+            while (halfHeight / inSampleSize >= reqHeight && halfWidth / inSampleSize >= reqWidth) {
+                inSampleSize *= 2
+            }
+        }
+
+        return inSampleSize
+    }
+
+    fun decodeSampledBitmapFromResource(
+        res: Resources,
+        resId: Int,
+        reqWidth: Int,
+        reqHeight: Int
+    ): Bitmap {
+        // First decode with inJustDecodeBounds=true to check dimensions
+        return BitmapFactory.Options().run {
+            inJustDecodeBounds = true
+            BitmapFactory.decodeResource(res, resId, this)
+
+            // Calculate inSampleSize
+            inSampleSize = calculateInSampleSize(this, reqWidth, reqHeight)
+
+            // Decode bitmap with inSampleSize set
+            inJustDecodeBounds = false
+
+            BitmapFactory.decodeResource(res, resId, this)
+        }
+    }
+
+
 }

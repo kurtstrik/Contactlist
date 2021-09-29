@@ -27,8 +27,8 @@ class CustomAdapter(var mCtx:Context , var resource:Int,var items:List<Contact>)
         val entry: TextView = view.findViewById(R.id.indexname)
 
         var mitems:Contact = items[position]
-        index.text = mitems.id.toString()
-
+        //index.text = mitems.id.toString()
+        index.text = position.toString()
         //index.text = counter.toString()
        // counter++
 

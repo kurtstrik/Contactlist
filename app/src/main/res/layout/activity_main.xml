@@ -4,13 +4,16 @@
     android:id="@+id/big"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:weightSum="10"
+    >
 
     <EditText
 
         android:id="@+id/searchtext"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_weight="0.1"
         android:hint="@string/search"
         android:inputType="textPersonName"
         android:singleLine="true"
@@ -20,20 +23,22 @@
     <ListView
         android:id="@+id/listentries"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:layout_weight="9.8"
         tools:listitem="@layout/fragment_input_list">
 
     </ListView>
 
     <TableRow
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_weight="0.1"
+        android:gravity="bottom">
 
         <Button
             android:id="@+id/searchfield"
             android:layout_width="wrap_content"
-
+            android:layout_weight="0.2"
 
             android:layout_height="wrap_content"
             android:onClick="newclicked"
@@ -42,19 +47,30 @@
         <Button
             android:id="@+id/delete"
             android:layout_width="wrap_content"
+            android:layout_weight="0.2"
             android:layout_height="wrap_content"
-            android:text="delete DB" />
+            android:text="delete DBD" />
+
+        <Button
+            android:id="@+id/refresh"
+            android:layout_width="wrap_content"
+            android:layout_weight="0.2"
+            android:layout_height="wrap_content"
+            android:text="refresh DB" />
+
+        <Button
+            android:id="@+id/showDB"
+            android:layout_width="wrap_content"
+            android:layout_weight="0.2"
+            android:layout_height="wrap_content"
+            android:text="show DB" />
 
         <Button
             android:id="@+id/update"
             android:layout_width="wrap_content"
+            android:layout_weight="0.2"
             android:layout_height="wrap_content"
             android:text="update DB" />
-
-        <Button
-            android:id="@+id/menu"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
     </TableRow>
 
     <!--
