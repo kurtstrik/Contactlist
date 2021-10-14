@@ -31,5 +31,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="added">contact added</string>
     <string name="not_added">Error! Contact NOT added</string>
+    <string name="updated">contact updated</string>
+    <string name="not_updated">Error! Contact NOT updated</string>
 
 </resources>

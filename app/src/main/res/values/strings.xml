@@ -16,8 +16,11 @@
     <string name="insert">insert here</string>
     <string name="newcontact">new contact</string>
     <string name="added">contact added</string>
+    <string name="not_added">Error! Contact NOT added</string>
 
     <string name="search">search for contact</string>
+
+
 
     <string-array name="Options">
         <item>edit</item>
@@ -28,5 +31,7 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="not_added">Error! Contact NOT added</string>
+    <string name="updated">contact updated</string>
+    <string name="not_updated">Error! Contact NOT updated</string>
+
 </resources>

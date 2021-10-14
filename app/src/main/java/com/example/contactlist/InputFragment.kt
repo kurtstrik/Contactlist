@@ -7,6 +7,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.text.Editable
+import android.text.SpannableStringBuilder
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
@@ -20,8 +21,11 @@ import androidx.fragment.app.Fragment
 
 
 /**
+ * Startfragment, wo eingetragene Kontakte aufgelistet, gesucht, oder bearbeitet werden.
+ * Jegliche weitere Interaktion wird dann zu -> Blankfragment weitergeleitet
+ *
+ *
  * A fragment representing a list of Items.
- * <p/>
  * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
  */
@@ -35,25 +39,17 @@ class InputFragment : Fragment() {
    lateinit var entries:ListView
    lateinit var mContext:Context
 
-   private val pickImage = 100
   //  https://androidexample.com/How_To_Create_A_Custom_Listview_-_Android_Example/index.php?view=article_discription&aid=67&aaid=92
-  //  var adapter: ArrayAdapter<*> = ArrayAdapter<String>(this, R.layout.ListView, StringArray)
-
 
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-
-       // dbhelp = DBHelper.getInstance(context)
         mContext = context
-       //arrayadapter = ArrayAdapter(context,R.layout.fragment_input,entries)
     }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-
         //https://medium.com/@xabaras/setting-windowsoftinputmode-for-a-single-fragment-c0b386463986
         //softInputMode = activity?.window?.attributes?.softInputMode
         //activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
@@ -61,7 +57,6 @@ class InputFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
-
 
         val view = inflater.inflate(R.layout.activity_main, container, false) as ViewGroup
         press = view.findViewById<View>(R.id.searchfield) as Button
@@ -71,8 +66,6 @@ class InputFragment : Fragment() {
         refresh =  view.findViewById<View>(R.id.refresh) as Button
         upd =  view.findViewById<View>(R.id.update) as Button
 
-
-
         //https://developer.android.com/guide/topics/ui/dialogs
         //arg0 is the listview, arg1 the layout enclosing the listview
         entries.setOnItemLongClickListener{ arg0, arg1, pos, id ->
@@ -80,11 +73,9 @@ class InputFragment : Fragment() {
 
             val selectedItem = arg0.getItemAtPosition(pos) as Contact
 
-
             builder.setTitle(selectedItem.surname+" "+selectedItem.famname)
             builder.setItems(R.array.Options) { dialog, which ->
-                // The 'which' argument contains the index position
-                // of the selected item
+                // The 'which' argument contains the index position of the selected item
                 //https://stackoverflow.com/questions/15762905/how-can-i-display-a-list-view-in-an-android-alert-dialog
 
                 when(which){
@@ -119,37 +110,29 @@ class InputFragment : Fragment() {
 
         var list = mutableListOf<Contact>()
 
-    //   list.add(Contact(1, "Max", "Mustermann", "Landstraße 66/3", "max@gmail.com","7133289","10/12/1988","20/12/2018", "passwort"))
-    //    list.add(Contact(2, "Max", "Musterman", "Landstraße 66/3", "max@gmail.com","7133289","10/12/1988","20/12/2018", "passwort"))
-     //   list.add(Contact(3, "Max", "Musterma", "Landstraße 66/3", "max@gmail.com","7133289","10/12/1988","20/12/2018", "passwort"))
 
         val lists = (activity as MainActivity).getcontacts()
 
         entries.adapter = CustomAdapter(mContext,R.layout.fragment_input,lists)
 
         //because the xml-layout onClick Method only looks on activity and not on fragment, we have to implement onClick ourselves here
-
-
         press!!.setOnClickListener {
           //field!!.hint = "OK "
           (activity as MainActivity).gotoform()
        }
 
        del!!.setOnClickListener {
-        //   Toast.makeText(mContext, DebugDB.getAddressLog() , Toast.LENGTH_SHORT).show()
-
 
            (activity as MainActivity).deltable()
            val newlist =  (activity as MainActivity).getcontacts()
-        //   entries = view.findViewById<View>(R.id.listentries) as ListView
+
            entries.adapter = CustomAdapter(mContext,R.layout.fragment_input,newlist)
        }
 
        refresh!!.setOnClickListener {
 
          actualize()
-         //  val newlist =  (activity as MainActivity).getcontacts()
-         //  entries.adapter = CustomAdapter(mContext,R.layout.fragment_input,newlist)
+
        }
 
         upd!!.setOnClickListener {
@@ -167,8 +150,11 @@ class InputFragment : Fragment() {
 
                }
                else{
-                   val con = Contact(s.toString())
+                   val con = Contact(s.toString(),s.toString())
                    val newlist = (activity as MainActivity).search(con)
+
+
+
                    entries.adapter = CustomAdapter(mContext,R.layout.fragment_input,newlist)
                }
 
@@ -228,5 +214,6 @@ class InputFragment : Fragment() {
         super.onDestroy()
      //   softInputMode?.let { activity?.window?.setSoftInputMode(it) }
     }
+
 
 }

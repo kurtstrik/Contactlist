@@ -24,5 +24,7 @@
         <item>Löschen</item>
 
     </string-array>
+    <string name="updated">Kontakt bearbeitet</string>
+    <string name="not_updated">Fehler! Kontakt nicht bearbeitet!</string>
 
 </resources>

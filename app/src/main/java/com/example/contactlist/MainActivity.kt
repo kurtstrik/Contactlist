@@ -112,6 +112,22 @@ class MainActivity : AppCompatActivity(), InputFragment.OnListFragmentInteractio
 
     }
 
+    fun createbutton(){
+        if(mPager.currentItem==1)//1 = BlankFragment
+            mPager.currentItem=0//0 = InputFragment
+
+        if(mPager.currentItem==0){
+            val toupdate = (mPager.adapter as ScreenSlidePagerAdapter).getItem(0) as InputFragment
+            toupdate.actualize()
+        }
+
+        val checker=  mPager.adapter as ScreenSlidePagerAdapter
+        var checker2 = checker.getItem(1) as BlankFragment
+        checker2.isonUpdate(false)
+
+    }
+
+
     fun gotoform(){
         if(mPager.currentItem==0)
             mPager.currentItem=1
@@ -169,31 +185,6 @@ class MainActivity : AppCompatActivity(), InputFragment.OnListFragmentInteractio
 
     }
 
-    /*
-    fun openActivityForResult() {
-        startForResult.launch(Intent(this, AnotherActivity::class.java))
-    }
-
-    var launchSomeActivity = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            val data: Intent? = result.data
-            // your operation...
-        }
-    }
-
-
-
-
-    val startForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            result: ActivityResult ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            val intent = result.data
-            // Handle the Intent
-            //do stuff here
-        }
-    }*/
-
-
     //https://stackoverflow.com/questions/8094715/how-to-catch-event-with-hardware-back-button-on-android/8094821
     override fun onBackPressed() {
         if (mPager.currentItem == 0)
@@ -210,7 +201,6 @@ class MainActivity : AppCompatActivity(), InputFragment.OnListFragmentInteractio
             checker2.cancel()
 
         }
-
 
     }
 

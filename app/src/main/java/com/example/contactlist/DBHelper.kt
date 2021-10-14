@@ -51,6 +51,8 @@ private const val SQL_DELETE_ENTRIES = "DROP TABLE IF EXISTS "+ CONTACTS_TABLE_N
 //https://abhiandroid.com/database/add-retrieve-image-sqlite-database-example-android-studio.html
 class DBHelper(context: Context): SQLiteOpenHelper(context, DATABASE_NAME, null, 1){
 
+
+    //we want DBHelper to be a singleton -> only exact one instance allowed
     companion object // https://stackoverflow.com/questions/35634803/kotlin-best-way-to-convert-singleton-databasecontroller-in-android
     {
         private var instance: DBHelper? = null
@@ -158,18 +160,22 @@ class DBHelper(context: Context): SQLiteOpenHelper(context, DATABASE_NAME, null,
 
     fun searchContact(contact: Contact):List<Contact>{
         val conList:MutableList<Contact> = ArrayList()
-        val temp = Array(1){contact.surname+"%"}
-       // val temp = Array(2){contact.surname+"%"; "%"+contact.famname+"%"} falls Familienname auch beachtet wird
+        //val temp = Array(1){"%"+contact.surname+"%"}
 
-        //val selectQuery = "Select * from $CONTACTS_TABLE_NAME where $CONTACTS_COLUMN_SURNAME like "+temp
+        val temp = Array(2){contact.surname+"%"; "%"+contact.famname+"%"}// falls Familienname auch beachtet wird | if familyname is considered too
+
+        //val selectQuery = "Select * from $CONTACTS_TABLE_NAME where $CONTACTS_COLUMN_SURNAME like "+temp[0]+"and $CONTACTS_COLUMN_FAMILYNAME like "+temp[1]
+
         val db = this.readableDatabase
         var cursor: Cursor? = null
         try{
+
+            /*
             cursor = db.rawQuery(
                 "Select * from $CONTACTS_TABLE_NAME where $CONTACTS_COLUMN_SURNAME like ?",
                 temp
-            )
-            //cursor = db.rawQuery("Select * from $CONTACTS_TABLE_NAME where $CONTACTS_COLUMN_SURNAME like ? or $CONTACTS_COLUMN_FAMILYNAME like ? ", temp) falls Familienname auch beachtet wird
+            )*/
+            cursor = db.rawQuery("Select * from $CONTACTS_TABLE_NAME where $CONTACTS_COLUMN_SURNAME like ? or $CONTACTS_COLUMN_FAMILYNAME like ? ", temp)// falls Familienname auch beachtet wird
 
 
         }catch (e: SQLiteException) {
@@ -205,6 +211,8 @@ class DBHelper(context: Context): SQLiteOpenHelper(context, DATABASE_NAME, null,
                         EditDate,
                         Password
                     )
+
+                    con.initspanString(contact,con.surname+" "+con.famname)
                     conList.add(con)
                 }
             } while (cursor.moveToNext())

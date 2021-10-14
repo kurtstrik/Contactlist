@@ -8,6 +8,7 @@ import android.widget.ArrayAdapter
 import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.text.trimmedLength
 
 var counter = 1
 //https://devofandroid.blogspot.com/2018/03/custom-listview-with-item-click.html
@@ -32,7 +33,12 @@ class CustomAdapter(var mCtx:Context , var resource:Int,var items:List<Contact>)
         //index.text = counter.toString()
        // counter++
 
-        entry.text = mitems.surname+"\n" + mitems.famname
+        if(mitems.spanStrings.length>0){
+            entry.text = mitems.spanStrings
+        }
+        else
+            entry.text = mitems.surname+"\n" + mitems.famname
+
         return view
     }
 

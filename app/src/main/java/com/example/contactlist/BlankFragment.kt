@@ -27,7 +27,11 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.InputStream
 
-//formular view of selected contact - fragment
+/**
+ * hier werden die Daten fuer die Kontakte erstellen/bearbeiten vom User eingegeben
+ *
+ * contains necessary input data from user for creating/updating a contact entry
+ */
 class BlankFragment : Fragment() {
 
     lateinit var cancel:Button
@@ -44,6 +48,9 @@ class BlankFragment : Fragment() {
     lateinit var birthdate:DatePicker
     lateinit var linear:LinearLayout
     lateinit var img:ImageButton
+    var imgheight = 100
+    var imgwidth = 100
+
 
     lateinit var edited:TextView
     lateinit var password:EditText
@@ -51,8 +58,6 @@ class BlankFragment : Fragment() {
 
     var updated:Boolean = false
 
-    private val pickImage = 100
-    val gallery = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
 
     //https://stackoverflow.com/questions/61455381/how-to-replace-startactivityforresult-with-activity-result-apis
 
@@ -62,23 +67,21 @@ class BlankFragment : Fragment() {
         if (result.resultCode == Activity.RESULT_OK) {
             // There are no request codes
             val data: Intent? = result.data
-            //val what: Bitmap? = BitmapFactory.decodeFile(data?.dataString)
+
 
 
            if(data?.data!=null) {
 
-               var bitmapfile = context?.contentResolver?.openInputStream(data?.data)
+               val bitmapfile = context?.contentResolver?.openInputStream(data?.data)
                filename = data?.data
 
-               var draw: BitmapDrawable = BitmapDrawable(this.resources, bitmapfile)
+               val draw = BitmapDrawable(this.resources, bitmapfile)
 
 
 
                if (draw != null) {
 
-                    Glide.with(this).load(draw).override(100,100).circleCrop().into(img)
-                   //Glide.with(this).load(draw).override(200,200).centerCrop().into(img)
-                   //Glide.with(this).load(draw).into(img)
+                    Glide.with(this).load(draw).override(150,150).circleCrop().into(img)
 
                    //img.setImageDrawable(BitmapDrawable(resources,decodeSampledBitmapFromResource(draw, R.id.imageButton, 100, 100)))
                }
@@ -128,11 +131,7 @@ class BlankFragment : Fragment() {
         //https://www.tutorialspoint.com/how-to-pick-an-image-from-an-image-gallery-on-android-using-kotlin
 
             openSomeActivityForResult()
-
-            //val gallery = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
-            //(activity as MainActivity).startActivityForResult(gallery, pickImage)
         }
-
 
         enter = view.findViewById(R.id.enter) as Button
         enter!!.setOnClickListener {
@@ -148,18 +147,16 @@ class BlankFragment : Fragment() {
 
 
 
-           var dateString =""+ birthdate.dayOfMonth+"."+(birthdate.month+1)+"."+birthdate.year
+           val dateString =""+ birthdate.dayOfMonth+"."+(birthdate.month+1)+"."+birthdate.year
 
-           // val mPager = view.findViewById(R.id.pager) as ViewPager
-           // val page = mPager.adapter.
             lateinit var contactprop:Contact
 
             if(img!=null){
 
                 //https://stackoverflow.com/questions/6341977/convert-drawable-to-blob-datatype
                 val hold:BitmapDrawable? = img.drawable as? BitmapDrawable
-                var bitmap:Bitmap? = hold?.bitmap
-                var stream:ByteArrayOutputStream = ByteArrayOutputStream()
+                val bitmap:Bitmap? = hold?.bitmap
+                val stream = ByteArrayOutputStream()
                 bitmap?.compress(Bitmap.CompressFormat.JPEG,100,stream)
 
                 val imgInByte:ByteArray = stream.toByteArray()
@@ -195,9 +192,9 @@ class BlankFragment : Fragment() {
                updated = false//!!!was tun wenn wiederholte Eingabe erfolgt? update nur false wenn screen verlassen wird
 
                if (result == 1)
-                   Toast.makeText(mContext, "Contact updated", Toast.LENGTH_SHORT).show()
+                   Toast.makeText(mContext, R.string.updated, Toast.LENGTH_SHORT).show()
                else
-                   Toast.makeText(mContext, "Contact not updated", Toast.LENGTH_SHORT).show()
+                   Toast.makeText(mContext, R.string.not_updated, Toast.LENGTH_SHORT).show()
 
                //(activity as MainActivity).backbutton()
 
@@ -206,10 +203,12 @@ class BlankFragment : Fragment() {
 
                val result = (activity as MainActivity).addcontact(contactprop)
 
-               if (result != 0L)
+               if (result != 0L) {
                    Toast.makeText(mContext, R.string.added, Toast.LENGTH_SHORT).show()
+                   (activity as MainActivity).backbutton()
+               }
                else
-                   Toast.makeText(mContext, "Contact not added", Toast.LENGTH_SHORT).show()
+                   Toast.makeText(mContext, R.string.not_added, Toast.LENGTH_SHORT).show()
            }
         }
         cancel = view.findViewById(R.id.cancel) as Button
