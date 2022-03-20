@@ -33,5 +33,6 @@
     <string name="not_added">Error! Contact NOT added</string>
     <string name="updated">contact updated</string>
     <string name="not_updated">Error! Contact NOT updated</string>
+    <string name="deleteDB">delete DB</string>
 
 </resources>

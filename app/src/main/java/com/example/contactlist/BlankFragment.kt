@@ -3,29 +3,25 @@ package com.example.contactlist
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
-import android.os.Environment
 import android.provider.MediaStore
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.graphics.drawable.toBitmap
-import androidx.core.view.get
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
-import androidx.viewpager.widget.ViewPager
 import com.bumptech.glide.Glide
 import java.io.ByteArrayOutputStream
-import java.io.File
-import java.io.InputStream
+import java.util.Calendar
+import java.sql.Date
+import java.sql.Timestamp
+import java.time.LocalDate
 
 /**
  * hier werden die Daten fuer die Kontakte erstellen/bearbeiten vom User eingegeben
@@ -81,7 +77,9 @@ class BlankFragment : Fragment() {
 
                if (draw != null) {
 
-                    Glide.with(this).load(draw).override(150,150).circleCrop().into(img)
+
+
+                    Glide.with(this).load(draw).override(150, 150).optionalCircleCrop().into(img)
 
                    //img.setImageDrawable(BitmapDrawable(resources,decodeSampledBitmapFromResource(draw, R.id.imageButton, 100, 100)))
                }
@@ -120,10 +118,26 @@ class BlankFragment : Fragment() {
     //    activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,savedInstanceState: Bundle?): View? { // Inflate the layout for this fragment
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? { // Inflate the layout for this fragment
         val view =
             inflater.inflate(R.layout.fragment_blank, container, false) as ViewGroup
-        linear = view.findViewById(R.id.blanklinear) as LinearLayout
+
+
+       // TODO: set width & height properly
+       val imageLayer = view.findViewById(R.id.imageLayer) as ConstraintLayout
+
+          // imgwidth = imageLayer.width //0
+         //  imgheight = imageLayer.height //0
+
+
+
+
+
+       linear = view.findViewById(R.id.blanklinear) as LinearLayout
 
        img = view.findViewById(R.id.imageButton)
 
@@ -147,17 +161,29 @@ class BlankFragment : Fragment() {
 
 
 
-           val dateString =""+ birthdate.dayOfMonth+"."+(birthdate.month+1)+"."+birthdate.year
-
+            val dateString =""+ birthdate.dayOfMonth+"."+(birthdate.month+1)+"."+birthdate.year
             lateinit var contactprop:Contact
+
+            val c:Calendar = Calendar.getInstance()
+
+            val editdate:String = ""+c.get(Calendar.DATE)+"."+ c.get(Calendar.MONTH)+"."+c.get(Calendar.YEAR)
+            //val editdate = LocalDate.now() not usable because we have API23 Timestamp(Calendar.getInstance().time.time)//https://alvinalexander.com/java/java-timestamp-example-current-time-now/
+
+
 
             if(img!=null){
 
                 //https://stackoverflow.com/questions/6341977/convert-drawable-to-blob-datatype
                 val hold:BitmapDrawable? = img.drawable as? BitmapDrawable
                 val bitmap:Bitmap? = hold?.bitmap
+
+
                 val stream = ByteArrayOutputStream()
-                bitmap?.compress(Bitmap.CompressFormat.JPEG,100,stream)
+
+                /* if we take JPEG the background transparency is set to black by default
+                   WEBP is used over PNG because of better compression
+                 */
+                bitmap?.compress(Bitmap.CompressFormat.WEBP, 50, stream)
 
                 val imgInByte:ByteArray = stream.toByteArray()
 
@@ -168,9 +194,9 @@ class BlankFragment : Fragment() {
                     email.text.toString(),
                     telephone.text.toString(),
                     dateString,
-                    edited.text.toString(),
+                    editdate.toString(),
                     password.text.toString(),
-                    imgInByte,
+                    imgInByte
                 )
 
             }
@@ -182,7 +208,7 @@ class BlankFragment : Fragment() {
                     email.text.toString(),
                     telephone.text.toString(),
                     dateString,
-                    edited.text.toString(),
+                    editdate.toString(),
                     password.text.toString()
                 )
             }
@@ -203,12 +229,14 @@ class BlankFragment : Fragment() {
 
                val result = (activity as MainActivity).addcontact(contactprop)
 
-               if (result != 0L) {
+               if (result == -1L) {
+                   Toast.makeText(mContext, R.string.not_added, Toast.LENGTH_SHORT).show()
+               }
+               else {
+
                    Toast.makeText(mContext, R.string.added, Toast.LENGTH_SHORT).show()
                    (activity as MainActivity).backbutton()
                }
-               else
-                   Toast.makeText(mContext, R.string.not_added, Toast.LENGTH_SHORT).show()
            }
         }
         cancel = view.findViewById(R.id.cancel) as Button
@@ -243,9 +271,14 @@ class BlankFragment : Fragment() {
             password.setText(null)
             password.setHint(R.string.insert)
 
+            img.setImageResource(R.mipmap.ic_contact_round)
+
             (activity as MainActivity).backbutton()
 
         }
+
+
+
         return view
     }
 
@@ -309,7 +342,7 @@ class BlankFragment : Fragment() {
 
     }
 
-    public fun updating(con:Contact){
+    public fun updating(con: Contact){
 
         updated = true
 
@@ -330,6 +363,21 @@ class BlankFragment : Fragment() {
         val telcurrent = view?.findViewById(R.id.tel) as EditText
         telcurrent?.setText(con.telephone)
 
+        val editcurrent =  view?.findViewById(R.id.textViewEdit) as TextView
+        editcurrent?.setText(con.edited)
+
+
+        // TODO: when wanting to change the img, the stored img should be displayed on BlankFragment Screen too
+        val imgcurrent = view?.findViewById(R.id.imageButton) as ImageButton
+
+        if(con.image!=null) {
+            val options: BitmapFactory.Options = BitmapFactory.Options()
+
+            val hold: BitmapDrawable? = img.drawable as? BitmapDrawable
+            val temp = con.image!!.size
+            val bitmap: Bitmap = BitmapFactory.decodeByteArray(con.image, 0, temp, options)
+            imgcurrent.setImageBitmap(bitmap)
+        }
       //
 
     //   birthcurrent.dayOfMonth = con.birthdate.
@@ -348,7 +396,7 @@ class BlankFragment : Fragment() {
 */
     }
 
-    public fun isonUpdate(bool:Boolean){
+    public fun isonUpdate(bool: Boolean){
         updated = bool
     }
 
@@ -358,47 +406,6 @@ class BlankFragment : Fragment() {
         fun onFragmentInteraction(uri: Uri?)
     }
 
-    //https://developer.android.com/topic/performance/graphics/load-bitmap#kotlin
-    fun calculateInSampleSize(options: BitmapFactory.Options, reqWidth: Int, reqHeight: Int): Int {
-        // Raw height and width of image
-        val (height: Int, width: Int) = options.run { outHeight to outWidth }
-        var inSampleSize = 1
-
-        if (height > reqHeight || width > reqWidth) {
-
-            val halfHeight: Int = height / 2
-            val halfWidth: Int = width / 2
-
-            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
-            // height and width larger than the requested height and width.
-            while (halfHeight / inSampleSize >= reqHeight && halfWidth / inSampleSize >= reqWidth) {
-                inSampleSize *= 2
-            }
-        }
-
-        return inSampleSize
-    }
-
-    fun decodeSampledBitmapFromResource(
-        res: Resources,
-        resId: Int,
-        reqWidth: Int,
-        reqHeight: Int
-    ): Bitmap {
-        // First decode with inJustDecodeBounds=true to check dimensions
-        return BitmapFactory.Options().run {
-            inJustDecodeBounds = true
-            BitmapFactory.decodeResource(res, resId, this)
-
-            // Calculate inSampleSize
-            inSampleSize = calculateInSampleSize(this, reqWidth, reqHeight)
-
-            // Decode bitmap with inSampleSize set
-            inJustDecodeBounds = false
-
-            BitmapFactory.decodeResource(res, resId, this)
-        }
-    }
 
 
 }

@@ -101,7 +101,7 @@ class Contact{
         birthdate: String,
         edited: String,
         pass: String,
-        image: ByteArray
+        image: ByteArray?
     ){
 
         this.id = cId
@@ -117,6 +117,10 @@ class Contact{
 
     }
 
+    /**
+     *
+     *
+     * */
     fun initspanString(arg: Contact, input:String){
 
         spanStrings = SpannableStringBuilder(input)

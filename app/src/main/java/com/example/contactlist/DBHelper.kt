@@ -25,6 +25,7 @@ private const val CONTACTS_COLUMN_PASSWORD = "password"
 private const val CONTACTS_COLUMN_IMGPATH = "imgpath"
 private const val CONTACTS_COLUMN_IMGDATA = "imgdata"
 
+//because there is no DATE datatype supported on SQLite we use a String representation for the dates
 private const val SQL_CREATE_ENTRIES = "CREATE TABLE "+ CONTACTS_TABLE_NAME+ " (" +
         CONTACTS_COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
         CONTACTS_COLUMN_SURNAME + " VARCHAR(256), " +
@@ -34,9 +35,9 @@ private const val SQL_CREATE_ENTRIES = "CREATE TABLE "+ CONTACTS_TABLE_NAME+ " (
         CONTACTS_COLUMN_TEL+" VARCHAR(256), " +
         CONTACTS_COLUMN_BIRTHDATE +" VARCHAR(256), " +
         CONTACTS_COLUMN_EDITDATE +" VARCHAR(256), " +
-        CONTACTS_COLUMN_PASSWORD +" VARCHAR(256)) "
+        CONTACTS_COLUMN_PASSWORD +" VARCHAR(256), "+
         //CONTACTS_COLUMN_IMGPATH +" VARCHAR(256), "+
-        //CONTACTS_COLUMN_IMGDATA+" BLOB)"
+        CONTACTS_COLUMN_IMGDATA+" BLOB)"
 
         //"image "+" BLOB)"
 
@@ -96,8 +97,8 @@ class DBHelper(context: Context): SQLiteOpenHelper(context, DATABASE_NAME, null,
 
       //  if(contact.url!="")
       //      contentValues.put(CONTACTS_COLUMN_IMGPATH, contact.url)
-      //  else if(contact.image?.firstOrNull()!=null)
-      //      contentValues.put(CONTACTS_COLUMN_IMGDATA , contact.image)
+      if(contact.image?.firstOrNull()!=null)
+          contentValues.put(CONTACTS_COLUMN_IMGDATA , contact.image)
 
         // Inserting Row
         val success = db.insert(CONTACTS_TABLE_NAME, null, contentValues) //2nd argument is String containing nullColumnHack
@@ -123,30 +124,36 @@ class DBHelper(context: Context): SQLiteOpenHelper(context, DATABASE_NAME, null,
                     val isnull = cursor.isNull(cursor.getColumnIndex("id"))
                     if(!isnull) {
 
-                        val Id = cursor.getInt(cursor.getColumnIndex("id"))
-                        val Surname = cursor.getString(cursor.getColumnIndex("surname"))
-                        val Familyname = cursor.getString(cursor.getColumnIndex("familyname"))
-                        val Adress = cursor.getString(cursor.getColumnIndex("adress"))
-                        val Email = cursor.getString(cursor.getColumnIndex("email"))
+                        val id = cursor.getInt(cursor.getColumnIndex("id"))
+                        val surname = cursor.getString(cursor.getColumnIndex("surname"))
+                        val familyname = cursor.getString(cursor.getColumnIndex("familyname"))
+                        val adress = cursor.getString(cursor.getColumnIndex("adress"))
+                        val email = cursor.getString(cursor.getColumnIndex("email"))
                         val tel = cursor.getString(cursor.getColumnIndex("telephone"))
-                        val BirthDate = cursor.getString(cursor.getColumnIndex("birthdate"))
-                        val EditDate = cursor.getString(cursor.getColumnIndex("edited"))
-                        val Password = cursor.getString(cursor.getColumnIndex("password"))
-                      //  val ImgPath = cursor.getString(cursor.getColumnIndex(CONTACTS_COLUMN_IMGPATH))
+                        val birthDate = cursor.getString(cursor.getColumnIndex("birthdate"))
+                        val editDate = cursor.getString(cursor.getColumnIndex("edited"))//TODO: convert from DATE sqlite to appropriate type
+                        val password = cursor.getString(cursor.getColumnIndex("password"))
+                        var imgData:ByteArray? = null
+                        try {
+                            imgData = cursor.getBlob(cursor.getColumnIndex(CONTACTS_COLUMN_IMGDATA))
+                        }
+                        catch(e:Exception){
+                            print(e.message)
 
-                     //   val ImgData = cursor.getBlob(cursor.getColumnIndex(CONTACTS_COLUMN_IMGDATA))
+                        }
+
 
                         val con = Contact(
-                            Id,
-                            Surname,
-                            Familyname,
-                            Adress,
-                            Email,
+                            id,
+                            surname,
+                            familyname,
+                            adress,
+                            email,
                             tel,
-                            BirthDate,
-                            EditDate,
-                            Password
-
+                            birthDate,
+                            editDate,
+                            password,
+                            imgData
                         )
                         conList.add(con)
                     }
@@ -189,27 +196,28 @@ class DBHelper(context: Context): SQLiteOpenHelper(context, DATABASE_NAME, null,
                 val isnull = cursor.isNull(cursor.getColumnIndex("id"))
                 if(!isnull) {
 
-                    val Id = cursor.getInt(cursor.getColumnIndex("id"))
-                    val Surname = cursor.getString(cursor.getColumnIndex("surname"))
-                    val Familyname = cursor.getString(cursor.getColumnIndex("familyname"))
-                    val Adress = cursor.getString(cursor.getColumnIndex("adress"))
-                    val Email = cursor.getString(cursor.getColumnIndex("email"))
+                    val id = cursor.getInt(cursor.getColumnIndex("id"))
+                    val surname = cursor.getString(cursor.getColumnIndex("surname"))
+                    val familyname = cursor.getString(cursor.getColumnIndex("familyname"))
+                    val adress = cursor.getString(cursor.getColumnIndex("adress"))
+                    val email = cursor.getString(cursor.getColumnIndex("email"))
                     val tel = cursor.getString(cursor.getColumnIndex("telephone"))
-                    val BirthDate = cursor.getString(cursor.getColumnIndex("birthdate"))
-                    val EditDate = cursor.getString(cursor.getColumnIndex("edited"))
-                    val Password = cursor.getString(cursor.getColumnIndex("password"))
-
+                    val birthDate = cursor.getString(cursor.getColumnIndex("birthdate"))
+                    val editDate = cursor.getString(cursor.getColumnIndex("edited"))
+                    val password = cursor.getString(cursor.getColumnIndex("password"))
+                    val imgData = cursor.getBlob(cursor.getColumnIndex(CONTACTS_COLUMN_IMGDATA))
 
                     val con = Contact(
-                        Id,
-                        Surname,
-                        Familyname,
-                        Adress,
-                        Email,
+                        id,
+                        surname,
+                        familyname,
+                        adress,
+                        email,
                         tel,
-                        BirthDate,
-                        EditDate,
-                        Password
+                        birthDate,
+                        editDate,
+                        password,
+                        imgData
                     )
 
                     con.initspanString(contact,con.surname+" "+con.famname)
@@ -237,7 +245,7 @@ class DBHelper(context: Context): SQLiteOpenHelper(context, DATABASE_NAME, null,
         contentValues.put(CONTACTS_COLUMN_BIRTHDATE, contact.birthdate)
         contentValues.put(CONTACTS_COLUMN_EDITDATE, contact.edited)
         contentValues.put(CONTACTS_COLUMN_PASSWORD, contact.pass)
-
+        contentValues.put(CONTACTS_COLUMN_IMGDATA , contact.image)
        // val upd = "UPDATE "+ CONTACTS_TABLE_NAME+" SET "//!!!!!!!
         // Updating Row
         val success = db.update(CONTACTS_TABLE_NAME, contentValues, "id=" + contact.id, null)
@@ -267,7 +275,7 @@ class DBHelper(context: Context): SQLiteOpenHelper(context, DATABASE_NAME, null,
 
     fun deleteTable(){
         val db = this.writableDatabase
-
+        //TODO: error here when recreating DB?
         db.execSQL(SQL_DELETE_ENTRIES)
         db.execSQL(SQL_CREATE_ENTRIES)
         db.close()

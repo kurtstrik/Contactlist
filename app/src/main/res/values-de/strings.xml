@@ -19,6 +19,8 @@
     <string name="added">Kontakt hinzugefügt</string>
     <string name="not_added">Fehler! Kontakt nicht erstellt!</string>
 
+
+
     <string-array name="Options">
         <item>Bearbeiten</item>
         <item>Löschen</item>
@@ -26,5 +28,6 @@
     </string-array>
     <string name="updated">Kontakt bearbeitet</string>
     <string name="not_updated">Fehler! Kontakt nicht bearbeitet!</string>
+    <string name="deleteDB">Liste leeren</string>
 
 </resources>

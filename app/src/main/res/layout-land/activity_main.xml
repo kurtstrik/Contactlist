@@ -17,8 +17,6 @@
         android:hint="@string/search"
         android:inputType="textPersonName"
         android:singleLine="true"
-        android:imeOptions="flagNoExtractUi"
-
         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
 

@@ -20,7 +20,7 @@
 
     <string name="search">search for contact</string>
 
-
+    <string name="deleteDB">delete DB</string>
 
     <string-array name="Options">
         <item>edit</item>
