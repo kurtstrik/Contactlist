@@ -49,7 +49,7 @@ class BlankFragment : Fragment() {
 
 
     lateinit var edited:TextView
-    lateinit var password:EditText
+    lateinit var status:TextView
     lateinit var filename:Uri
 
     var updated:Boolean = false
@@ -109,7 +109,6 @@ class BlankFragment : Fragment() {
         return fragment
     }
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -156,7 +155,7 @@ class BlankFragment : Fragment() {
           telephone = view.findViewById(R.id.tel) as EditText
           birthdate = view.findViewById(R.id.datepick) as DatePicker
           edited = view.findViewById(R.id.textViewEdit) as TextView
-          password = view.findViewById(R.id.password) as EditText
+
 
 
 
@@ -195,7 +194,6 @@ class BlankFragment : Fragment() {
                     telephone.text.toString(),
                     dateString,
                     editdate.toString(),
-                    password.text.toString(),
                     imgInByte
                 )
 
@@ -208,14 +206,13 @@ class BlankFragment : Fragment() {
                     email.text.toString(),
                     telephone.text.toString(),
                     dateString,
-                    editdate.toString(),
-                    password.text.toString()
+                    editdate.toString()
                 )
             }
            if(updated) {
                val result = (activity as MainActivity).updatecontact(contactprop)
 
-               updated = false//!!!was tun wenn wiederholte Eingabe erfolgt? update nur false wenn screen verlassen wird
+               updated = false//TODO: was tun wenn wiederholte Eingabe erfolgt? update nur false wenn screen verlassen wird
 
                if (result == 1)
                    Toast.makeText(mContext, R.string.updated, Toast.LENGTH_SHORT).show()
@@ -266,10 +263,6 @@ class BlankFragment : Fragment() {
             edited = view.findViewById(R.id.textViewEdit) as TextView
             edited.setText(null)
             edited.setHint("")
-
-            password = view.findViewById(R.id.password) as EditText
-            password.setText(null)
-            password.setHint(R.string.insert)
 
             img.setImageResource(R.mipmap.ic_contact_round)
 
@@ -334,17 +327,22 @@ class BlankFragment : Fragment() {
         edited.setText(null)
         edited.setHint("")
 
-        val password = view?.findViewById(R.id.password) as EditText
-        password.setText(null)
-        password.setHint(R.string.insert)
+    }
 
+    fun creating(){
+        updated = false
 
+        status = view?.findViewById(R.id.editing_status) as TextView
+        status.setText(R.string.status_new)
 
     }
 
-    public fun updating(con: Contact){
+    fun updating(con: Contact){
 
         updated = true
+
+        status = view?.findViewById(R.id.editing_status) as TextView
+        status.setText(R.string.status_edit)
 
         c_id = con.id//ID handling?
 
@@ -392,7 +390,6 @@ class BlankFragment : Fragment() {
         val editcurrent = view?.findViewById<TextView>(R.id.textViewEdit) Problem!
         editcurrent?.setText(con.edited)
 
-        password?.setText(con.pass) Problem!
 */
     }
 

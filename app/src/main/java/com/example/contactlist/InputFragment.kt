@@ -79,11 +79,10 @@ class InputFragment : Fragment() {
                 //https://stackoverflow.com/questions/15762905/how-can-i-display-a-list-view-in-an-android-alert-dialog
 
                 when(which){
-                    0->{ //1st element of Options array
-                        //Toast.makeText(mContext, "edit selected" , Toast.LENGTH_SHORT).show()
+                    0->{ //1st element of Options array - edit
                         (activity as MainActivity).passData(selectedItem)
                          }
-                    1->{//2nd element of Options array
+                    1->{//2nd element of Options array - delete
                         //Toast.makeText(mContext, "delete selected" , Toast.LENGTH_SHORT).show()
                         (activity as MainActivity).delcontact(selectedItem)
                         val newlist =  (activity as MainActivity).getcontacts()
@@ -118,7 +117,7 @@ class InputFragment : Fragment() {
         //because the xml-layout onClick Method only looks on activity and not on fragment, we have to implement onClick ourselves here
         press!!.setOnClickListener {
           //field!!.hint = "OK "
-          (activity as MainActivity).gotoform()
+          (activity as MainActivity).createcontact()
        }
 
        del!!.setOnClickListener {

@@ -230,25 +230,6 @@
                 android:layout_marginStart="10dp"
                 android:gravity="start" />
 
-            <TextView
-                android:id="@+id/textView9"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-
-                android:gravity="start"
-                android:text="@string/password" />
-
-            <EditText
-                android:id="@+id/password"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:imeOptions="flagNoExtractUi"
-                android:ems="10"
-                android:gravity="start"
-                android:hint="@string/insert"
-                android:inputType="numberPassword"
-                android:singleLine="true" />
         </LinearLayout>
     </ScrollView>
 

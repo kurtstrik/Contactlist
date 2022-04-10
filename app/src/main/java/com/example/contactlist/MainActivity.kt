@@ -36,6 +36,7 @@ class MainActivity : AppCompatActivity(), InputFragment.OnListFragmentInteractio
      * and next wizard steps.
      */
     private lateinit var mPager: ViewPager
+    //TODO: https://developer.android.com/training/animation/vp2-migration
 
     //val getContent = registerForActivityResult(Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI),100) {}
 
@@ -144,19 +145,19 @@ class MainActivity : AppCompatActivity(), InputFragment.OnListFragmentInteractio
 
     }
 
+    fun createcontact(){
+        gotoform()
+        val checker=  mPager.adapter as ScreenSlidePagerAdapter
+        var checker2 = checker.getItem(1) as BlankFragment
+
+        return checker2.creating()
+    }
+
 
     fun gotoform(){
         if(mPager.currentItem==0)
             mPager.currentItem=1
-
-
     }
-
-    fun gotodetails(){
-
-
-    }
-
 
     fun passtoform(con:Contact){
         if(mPager.currentItem==0) {
@@ -194,11 +195,6 @@ class MainActivity : AppCompatActivity(), InputFragment.OnListFragmentInteractio
 
     fun deltable(){
        return DBHelper.getInstance(this).deleteTable()
-
-    }
-
-    fun details(con:Contact){
-
 
     }
 

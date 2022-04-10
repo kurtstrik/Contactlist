@@ -12,7 +12,7 @@
     <string name="enter">Eingabe</string>
     <string name="cancel">Abbruch</string>
 
-    <string name="insert">hier eingeben</string>
+    <string name="insert"><i>hier eingeben</i></string>
     <string name="hello_blank_fragment">hello</string>
     <string name="search">Suchbegriff eingeben</string>
     <string name="newcontact">Neuer Kontakt</string>
@@ -29,5 +29,7 @@
     <string name="updated">Kontakt bearbeitet</string>
     <string name="not_updated">Fehler! Kontakt nicht bearbeitet!</string>
     <string name="deleteDB">Liste leeren</string>
+    <string name="status_new">Kontakt Erstellung</string>
+    <string name="status_edit">Kontakt Bearbeitung</string>
 
 </resources>

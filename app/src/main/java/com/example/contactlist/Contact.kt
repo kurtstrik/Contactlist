@@ -26,14 +26,6 @@ class Contact{
     var image: ByteArray? = null
 
 
-
-
-    constructor(surname: String){
-        this.surname = surname
-
-
-    }
-
     constructor(surname: String, famname: String){
         this.surname = surname
         this.famname = famname
@@ -47,8 +39,7 @@ class Contact{
         userEmail: String,
         telephone: String,
         birthdate: String,
-        edited: String,
-        pass: String
+        edited: String
 
     ){
 
@@ -60,7 +51,7 @@ class Contact{
         this.telephone = telephone
         this.birthdate = birthdate
         this.edited = edited
-        this.pass = pass
+
 
     }
 
@@ -75,7 +66,7 @@ class Contact{
         telephone: String,
         birthdate: String,
         edited: String,
-        pass: String,
+
         url: String
     ){
 
@@ -87,7 +78,7 @@ class Contact{
         this.telephone = telephone
         this.birthdate = birthdate
         this.edited = edited
-        this.pass = pass
+
         this.url = url
     }
 
@@ -100,7 +91,7 @@ class Contact{
         telephone: String,
         birthdate: String,
         edited: String,
-        pass: String,
+
         image: ByteArray?
     ){
 
@@ -112,7 +103,7 @@ class Contact{
         this.telephone = telephone
         this.birthdate = birthdate
         this.edited = edited
-        this.pass = pass
+
         this.image = image
 
     }

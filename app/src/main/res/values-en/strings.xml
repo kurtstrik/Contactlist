@@ -15,7 +15,7 @@
     <string name="enter">enter</string>
     <string name="cancel">cancel</string>
 
-    <string name="insert">insert here</string>
+    <string name="insert"><i>insert here</i></string>
     <string name="newcontact">new contact</string>
 
 
@@ -34,5 +34,7 @@
     <string name="updated">contact updated</string>
     <string name="not_updated">Error! Contact NOT updated</string>
     <string name="deleteDB">delete DB</string>
+    <string name="status_new">creating contact</string>
+    <string name="status_edit">editing contact</string>
 
 </resources>
