@@ -1,30 +1,30 @@
 package com.example.contactlist
 
+//import android.support.v4.app.Fragment
+//import android.R
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
-import android.content.res.Configuration
 import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
 import android.view.View
 import android.view.WindowManager
-import android.widget.TextView
 import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-//import android.support.v4.app.Fragment
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentStatePagerAdapter
-import androidx.viewpager.widget.ViewPager
+import androidx.core.view.get
+import androidx.fragment.app.*
+import androidx.lifecycle.Lifecycle
+import androidx.viewpager2.adapter.FragmentStateAdapter
+import androidx.viewpager2.widget.ViewPager2
+
+
 
 //https://stackoverflow.com/questions/14678593/the-application-may-be-doing-too-much-work-on-its-main-thread
-
+//https://developer.android.com/guide/fragments/communicate
 /**
  * The number of pages (wizard steps) to show in this demo.
  */
-private const val NUM_PAGES = 2
+private const val NUM_PAGES = 3
 
 class MainActivity : AppCompatActivity(), InputFragment.OnListFragmentInteractionListener,
     BlankFragment.OnFragmentInteractionListener, DataPassListener {
@@ -35,38 +35,60 @@ class MainActivity : AppCompatActivity(), InputFragment.OnListFragmentInteractio
      * The pager widget, which handles animation and allows swiping horizontally to access previous
      * and next wizard steps.
      */
-    private lateinit var mPager: ViewPager
+    private lateinit var mPager: ViewPager2
     //TODO: https://developer.android.com/training/animation/vp2-migration
-
     //val getContent = registerForActivityResult(Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI),100) {}
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.screen_slide)
 
         // Instantiate a ViewPager and a PagerAdapter.
-        mPager = findViewById<View>(R.id.pager) as ViewPager
-        // Instantiate a ViewPager and a PagerAdapter.
-          val pagerAdapter = ScreenSlidePagerAdapter(supportFragmentManager)
-
+        mPager = findViewById<View>(R.id.pager) as ViewPager2
+        mPager.offscreenPageLimit=2
+        val pagerAdapter = ScreenSlideViewPager2(this)
 
         mPager.adapter = pagerAdapter
+        mPager.setUserInputEnabled(false)//disable manual swiping
 
+        //1st fragment(InputFragment) is already loaded with view in the adapter..
+        //..but the 2nd fragment(BlankFragment) not, so we have to go through the fragments once and then back to the start
+        gotoform()
+        gofromform()
+        todetails()
+        gofromdetail()
 
         softInputMode = window?.attributes?.softInputMode
         window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
 
-        mPager.addOnPageChangeListener(object:ViewPager.OnPageChangeListener{
+        pagechange_register()
 
-            override fun onPageScrollStateChanged(state: Int) {
 
+
+        //https://stackoverflow.com/questions/56808828/how-do-i-access-sqlite-db-in-an-activity-from-inside-a-fragment-using-kotlin
+        try {
+            DBHelper.getInstance(this)
+        }
+        catch (e: Exception) {
+            val builder: AlertDialog.Builder = AlertDialog.Builder(this)
+            builder.setTitle("Error Exception")
+            builder.setMessage("Could not create a database connection")
+        }
+    }
+
+    private fun pagechange_register() {
+
+        mPager.registerOnPageChangeCallback(object: ViewPager2.OnPageChangeCallback() {
+            override fun onPageScrolled(
+                position: Int,
+                positionOffset: Float,
+                positionOffsetPixels: Int
+            ) {
+                super.onPageScrolled(position, positionOffset, positionOffsetPixels)
             }
 
-            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
-
-            }
             override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
 
                 //in the contactlist screen, we don't want the inputwindow to squeeze the rest of the layout -> hence the adjust_nothing mode
                 if(position==0){
@@ -77,27 +99,20 @@ class MainActivity : AppCompatActivity(), InputFragment.OnListFragmentInteractio
                     softInputMode?.let {window?.setSoftInputMode(it) }
                     window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
                 }
+
+                else{
+                    softInputMode?.let {window?.setSoftInputMode(it) }
+                    window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
+
+                }
             }
         })
 
-
-        //https://stackoverflow.com/questions/56808828/how-do-i-access-sqlite-db-in-an-activity-from-inside-a-fragment-using-kotlin
-        try {
-
-            DBHelper.getInstance(this)
-
-           // database = this.openOrCreateDatabase("CreditsDB", Context.MODE_PRIVATE, null)
-        }
-        catch(e: Exception)
-        {
-            val builder: AlertDialog.Builder = AlertDialog.Builder(this)
-            builder.setTitle("Error Exception")
-            builder.setMessage("Could not create a database connection")
-        }
-
     }
 
-    //TODO: cannot switch between portrait/landscape without crashing
+//https://www.androiddesignpatterns.com/2013/04/retaining-objects-across-config-changes.html
+
+    //TODO: cannot switch between portrait/landscape without crashing - CHECK
     /*
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
@@ -112,22 +127,18 @@ class MainActivity : AppCompatActivity(), InputFragment.OnListFragmentInteractio
         }
     }*/
 
-
     fun backbutton(){
-        if(mPager.currentItem==1)//1 = BlankFragment
+        if(mPager.currentItem!=0)
             mPager.currentItem=0//0 = InputFragment
 
         if(mPager.currentItem==0){
-            val toupdate = (mPager.adapter as ScreenSlidePagerAdapter).getItem(0) as InputFragment
+            val toupdate = (mPager.adapter as ScreenSlideViewPager2).createFragment(0) as InputFragment
             toupdate.actualize()
+            //super.onBackPressed()
         }
-
-        val checker=  mPager.adapter as ScreenSlidePagerAdapter
-        var checker2 = checker.getItem(1) as BlankFragment
+        val checker=  mPager.adapter as ScreenSlideViewPager2
+        var checker2 = checker.createFragment(1) as BlankFragment
         checker2.isonUpdate(false)
-
-
-
     }
 
     fun createbutton(){
@@ -135,67 +146,89 @@ class MainActivity : AppCompatActivity(), InputFragment.OnListFragmentInteractio
             mPager.currentItem=0//0 = InputFragment
 
         if(mPager.currentItem==0){
-            val toupdate = (mPager.adapter as ScreenSlidePagerAdapter).getItem(0) as InputFragment
+            val toupdate = (mPager.adapter as ScreenSlideViewPager2).createFragment(0) as InputFragment
             toupdate.actualize()
         }
 
-        val checker=  mPager.adapter as ScreenSlidePagerAdapter
-        var checker2 = checker.getItem(1) as BlankFragment
+        val checker=  mPager.adapter as ScreenSlideViewPager2
+        var checker2 = checker.createFragment(1) as BlankFragment
         checker2.isonUpdate(false)
+    }
+
+    fun actualizing(){//TODO:should immediately be visible
+        val toupdate = (mPager.adapter as ScreenSlideViewPager2).createFragment(0) as InputFragment
+        toupdate.actualize()
 
     }
 
     fun createcontact(){
-        gotoform()
-        val checker=  mPager.adapter as ScreenSlidePagerAdapter
-        var checker2 = checker.getItem(1) as BlankFragment
+       val checker=  mPager.adapter as ScreenSlideViewPager2
+       var checker2 = checker.createFragment(1) as BlankFragment
 
-        return checker2.creating()
+        gotoform()
+
+        if(checker2.lifecycle.currentState== Lifecycle.State.STARTED)//when it is not the 1st create call
+            checker2.creating()
     }
 
-
     fun gotoform(){
-        if(mPager.currentItem==0)
+        if(mPager.currentItem!=1)
             mPager.currentItem=1
     }
 
-    fun passtoform(con:Contact){
-        if(mPager.currentItem==0) {
-            mPager.currentItem = 1
+    fun gofromform(){
+        if(mPager.currentItem!=0)
+            mPager.currentItem=0
 
-        mPager.adapter
+        val checker=  mPager.adapter as ScreenSlideViewPager2
+        var checker2 = checker.createFragment(1) as BlankFragment
+        checker2.isonUpdate(false)
 
-        }
+    }
 
+    fun todetails(){//TODO: transition animation happens here - remove
+         if(mPager.currentItem!=2)
+            mPager.currentItem=2
+    }
+
+    fun gofromdetail(){
+        if(mPager.currentItem!=0)
+            mPager.currentItem=0
     }
 
     fun getcontacts():List<Contact>{
       return DBHelper.getInstance(this).viewContacts()
     }
 
-    fun search(contact:Contact):List<Contact>{
-
+    fun search(contact: Contact):List<Contact>{
         return DBHelper.getInstance(this).searchContact(contact)
     }
 
 
-    fun addcontact(con:Contact):Long{
-
+    fun addcontact(con: Contact):Long{
        return DBHelper.getInstance(this).addContact(con)
     }
 
-    fun updatecontact(con:Contact):Int{
+    fun updatecontact(con: Contact):Int{
         return DBHelper.getInstance(this).updateContact(con)
     }
 
 
-    fun delcontact(con:Contact){
+    fun delcontact(con: Contact){
         DBHelper.getInstance(this).deleteContact(con)
     }
 
     fun deltable(){
        return DBHelper.getInstance(this).deleteTable()
+    }
 
+    fun detailsData(con: Contact) {
+        val detailfrag = mPager.adapter as ScreenSlideViewPager2
+        val frag = detailfrag.createFragment(2) as DetailsFragment
+
+        todetails()
+
+        frag.receiveData(con)//TODO:bug
     }
 
     //https://stackoverflow.com/questions/8094715/how-to-catch-event-with-hardware-back-button-on-android/8094821
@@ -205,16 +238,14 @@ class MainActivity : AppCompatActivity(), InputFragment.OnListFragmentInteractio
             // Back button. This calls finish() on this activity and pops the back stack.
             super.onBackPressed()
          else{
-            // Otherwise, select the previous step.
-            mPager.currentItem = mPager.currentItem - 1
+            val checker = mPager.adapter as ScreenSlideViewPager2
 
-            val checker=  mPager.adapter as ScreenSlidePagerAdapter
-            var checker2 = checker.getItem(1) as BlankFragment
-            checker2.isonUpdate(false)
-            checker2.cancel()
+                var checker2 = checker.createFragment(1) as BlankFragment
+                checker2.isonUpdate(false)
+                checker2.reset()
 
+            mPager.currentItem = 0
         }
-
     }
 
     override fun onListFragmentInteraction(uri: Uri?) {
@@ -225,34 +256,36 @@ class MainActivity : AppCompatActivity(), InputFragment.OnListFragmentInteractio
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-
     /**
      * A simple pager adapter that represents 2 ScreenSlidePageFragment objects, in
      * sequence.
      *
-     * source: https://developer.android.com/training/animation/screen-slide
+     * source: https://developer.android.com/training/animation/screen-slide-2
      *
      */
-    private inner class ScreenSlidePagerAdapter(fm: FragmentManager) : FragmentStatePagerAdapter(fm) {
+    private inner class ScreenSlideViewPager2(fa: FragmentActivity):FragmentStateAdapter(fa){
         private val input:Fragment = InputFragment()
         private val blank:Fragment = BlankFragment()
+        private val detail:Fragment = DetailsFragment()
 
-        override fun getCount(): Int = NUM_PAGES
+        override fun getItemCount(): Int = NUM_PAGES
 
-        override fun getItem(position: Int): Fragment{
+        override fun createFragment(position: Int): Fragment{
             if(position == 0)
-               return input
-
-            else
-                return blank
-
+                return input//Input Fragment() would destroy reference we need for further methods/operations
+            else {
+                if (position == 1)
+                    return blank
+                else
+                    return detail
+            }
         }
     }
 
     override fun passData(data: Contact) {
         gotoform()
-        val checker=  mPager.adapter as ScreenSlidePagerAdapter
-        var checker2 = checker.getItem(1) as BlankFragment
+        val checker=  mPager.adapter as ScreenSlideViewPager2
+        var checker2 = checker.createFragment(1) as BlankFragment
 
         return checker2.updating(data)
     }
@@ -262,7 +295,6 @@ class MainActivity : AppCompatActivity(), InputFragment.OnListFragmentInteractio
         activityResult.launch(intent)
 
     }
-
 
 }
 

@@ -70,8 +70,9 @@
         <Button
             android:id="@+id/update"
             android:layout_width="wrap_content"
-            android:layout_weight="0.2"
             android:layout_height="wrap_content"
+            android:layout_weight="0.2"
+            android:onClick="updateclick"
             android:text="update DB" />
     </TableRow>
 

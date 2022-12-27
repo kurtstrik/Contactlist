@@ -88,11 +88,23 @@ class DBHelper(context: Context): SQLiteOpenHelper(context, DATABASE_NAME, null,
         contentValues.put(CONTACTS_COLUMN_BIRTHDATE, contact.birthdate)
         contentValues.put(CONTACTS_COLUMN_EDITDATE, contact.edited)
 
-
-      //  if(contact.url!="")
-      //      contentValues.put(CONTACTS_COLUMN_IMGPATH, contact.url)
       if(contact.image?.firstOrNull()!=null)
           contentValues.put(CONTACTS_COLUMN_IMGDATA , contact.image)
+/*      TODO:optimized?
+https://www.vogella.com/tutorials/AndroidSQLite/article.html
+        db.beginTransaction();
+        try {
+            for (int i= 0; i< values.lenght; i++){
+                // TODO prepare ContentValues object values
+                db.insert(your_table, null, values);
+                // In case you do larger updates
+                yieldIfContededSafely()
+            }
+            db.setTransactionSuccessful();
+        } finally {
+            db.endTransaction();
+        }*/
+
 
         // Inserting Row
         val success = db.insert(CONTACTS_TABLE_NAME, null, contentValues) //2nd argument is String containing nullColumnHack
@@ -109,7 +121,6 @@ class DBHelper(context: Context): SQLiteOpenHelper(context, DATABASE_NAME, null,
         try{
             cursor = db.rawQuery(selectQuery, null)
         }catch (e: SQLiteException) {
-           // db.execSQL(selectQuery) database is empty/null
             return ArrayList()
         }
 
@@ -133,9 +144,7 @@ class DBHelper(context: Context): SQLiteOpenHelper(context, DATABASE_NAME, null,
                         }
                         catch(e:Exception){
                             print(e.message)
-
                         }
-
 
                         val con = Contact(
                             id,
@@ -161,26 +170,16 @@ class DBHelper(context: Context): SQLiteOpenHelper(context, DATABASE_NAME, null,
 
     fun searchContact(contact: Contact):List<Contact>{
         val conList:MutableList<Contact> = ArrayList()
-        //val temp = Array(1){"%"+contact.surname+"%"}
 
         val temp = Array(2){contact.surname+"%"; "%"+contact.famname+"%"}// falls Familienname auch beachtet wird | if familyname is considered too
-
-        //val selectQuery = "Select * from $CONTACTS_TABLE_NAME where $CONTACTS_COLUMN_SURNAME like "+temp[0]+"and $CONTACTS_COLUMN_FAMILYNAME like "+temp[1]
 
         val db = this.readableDatabase
         var cursor: Cursor? = null
         try{
-
-            /*
-            cursor = db.rawQuery(
-                "Select * from $CONTACTS_TABLE_NAME where $CONTACTS_COLUMN_SURNAME like ?",
-                temp
-            )*/
             cursor = db.rawQuery("Select * from $CONTACTS_TABLE_NAME where $CONTACTS_COLUMN_SURNAME like ? or $CONTACTS_COLUMN_FAMILYNAME like ? ", temp)// falls Familienname auch beachtet wird
 
-
         }catch (e: SQLiteException) {
-            // db.execSQL(selectQuery) database is empty/null
+            //database is empty/null
             return ArrayList()
         }
 
@@ -240,7 +239,7 @@ class DBHelper(context: Context): SQLiteOpenHelper(context, DATABASE_NAME, null,
         contentValues.put(CONTACTS_COLUMN_EDITDATE, contact.edited)
 
         contentValues.put(CONTACTS_COLUMN_IMGDATA , contact.image)
-       // val upd = "UPDATE "+ CONTACTS_TABLE_NAME+" SET "//!!!!!!!
+
         // Updating Row
         val success = db.update(CONTACTS_TABLE_NAME, contentValues, "id=" + contact.id, null)
         //2nd argument is String containing nullColumnHack
@@ -255,21 +254,9 @@ class DBHelper(context: Context): SQLiteOpenHelper(context, DATABASE_NAME, null,
         return stream.toByteArray()
     }
 
-
-
-    /*
-    @Throws(SQLiteException::class)
-    fun addEntry(name: String?, image: ByteArray?) {
-        val database = this.writableDatabase
-        val cv = ContentValues()
-        cv.put(KEY_IMAGE, image)
-        database.insert(DB_TABLE, null, cv)
-    }*/
-
-
     fun deleteTable(){
         val db = this.writableDatabase
-        //TODO: error here when recreating DB?
+
         db.execSQL(SQL_DELETE_ENTRIES)
         db.execSQL(SQL_CREATE_ENTRIES)
         db.close()

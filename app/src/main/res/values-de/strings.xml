@@ -26,6 +26,13 @@
         <item>Löschen</item>
 
     </string-array>
+
+    <string-array name="PicOptions">
+        <item>Neues Foto</item>
+        <item>Foto löschen</item>
+
+    </string-array>
+
     <string name="updated">Kontakt bearbeitet</string>
     <string name="not_updated">Fehler! Kontakt nicht bearbeitet!</string>
     <string name="deleteDB">Liste leeren</string>

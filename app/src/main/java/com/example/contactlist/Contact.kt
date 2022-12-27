@@ -31,17 +31,13 @@ class Contact{
         this.famname = famname
 
     }
-    constructor(
-        cId: Int,
-        surname: String,
-        famname: String,
-        adress: String,
-        userEmail: String,
-        telephone: String,
-        birthdate: String,
-        edited: String
 
-    ){
+    constructor(){
+
+
+    }
+
+    constructor(cId: Int, surname: String, famname: String, adress: String, userEmail: String, telephone: String, birthdate: String, edited: String){
 
         this.id = cId
         this.surname = surname
@@ -57,18 +53,7 @@ class Contact{
 
 
 
-    constructor(
-        cId: Int,
-        surname: String,
-        famname: String,
-        adress: String,
-        userEmail: String,
-        telephone: String,
-        birthdate: String,
-        edited: String,
-
-        url: String
-    ){
+    constructor(cId: Int, surname: String, famname: String, adress: String, userEmail: String, telephone: String, birthdate: String, edited: String, url: String){
 
         this.id = cId
         this.surname = surname
@@ -82,18 +67,7 @@ class Contact{
         this.url = url
     }
 
-    constructor(
-        cId: Int,
-        surname: String,
-        famname: String,
-        adress: String,
-        userEmail: String,
-        telephone: String,
-        birthdate: String,
-        edited: String,
-
-        image: ByteArray?
-    ){
+    constructor(cId: Int, surname: String, famname: String, adress: String, userEmail: String, telephone: String, birthdate: String, edited: String, image: ByteArray?){
 
         this.id = cId
         this.surname = surname
@@ -102,6 +76,21 @@ class Contact{
         this.userEmail = userEmail
         this.telephone = telephone
         this.birthdate = birthdate
+        this.edited = edited
+
+        this.image = image
+
+    }
+
+
+    constructor(cId: Int, surname: String, famname: String, adress: String, userEmail: String, telephone: String, edited: String, image: ByteArray){
+        this.id = cId
+        this.surname = surname
+        this.famname = famname
+        this.adress = adress
+        this.userEmail = userEmail
+        this.telephone = telephone
+
         this.edited = edited
 
         this.image = image

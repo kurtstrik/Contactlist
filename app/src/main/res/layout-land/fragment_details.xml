@@ -15,7 +15,7 @@
         android:id="@+id/detailstopLayer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1">
+        android:layout_weight="2">
 
         <ImageButton
             android:id="@+id/imageButton"
@@ -73,12 +73,24 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <TextView
+            android:id="@+id/editing_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:paddingBottom="4dp"
+            android:textStyle="italic"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/imageButton"
+            app:layout_constraintTop_toBottomOf="@+id/enter" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="9">
+        android:layout_weight="8">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -93,7 +105,7 @@
                 android:gravity="start"
                 android:text="@string/surname" />
 
-            <EditText
+            <TextView
                 android:id="@+id/surname"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -113,7 +125,7 @@
                 android:gravity="start"
                 android:text="@string/familyname" />
 
-            <EditText
+            <TextView
                 android:id="@+id/familyname"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -133,7 +145,7 @@
                 android:gravity="start"
                 android:text="@string/address" />
 
-            <EditText
+            <TextView
                 android:id="@+id/adress"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -152,7 +164,7 @@
                 android:gravity="start"
                 android:text="@string/email" />
 
-            <EditText
+            <TextView
                 android:id="@+id/email"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -172,7 +184,7 @@
                 android:gravity="start"
                 android:text="@string/tel" />
 
-            <EditText
+            <TextView
                 android:id="@+id/tel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -199,11 +211,10 @@
                 android:calendarViewShown="false"
                 android:datePickerMode="spinner"
                 android:focusable="false"
-                android:imeOptions="flagNoExtractUi"
-                tools:visibility="gone" />
+                android:imeOptions="flagNoExtractUi" />
 
             <!--
-            <EditText
+            <TextView
                 android:id="@+id/birth"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -229,7 +240,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:gravity="start" />
+                android:gravity="start"
+                android:textStyle="bold" />
 
         </LinearLayout>
     </ScrollView>
