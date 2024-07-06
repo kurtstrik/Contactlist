@@ -51,11 +51,6 @@ class CustomAdapter(var mCtx: Context, var resource: Int, var items: List<Contac
             foto.setImageBitmap(bmp)
         }
 
-        //foto.background
-        //foto.setBackgroundColor(Color.parseColor("#008577"))
-        //foto.setColorFilter(color.white,android.graphics.PorterDuff.Mode.DST_IN);
-        //foto.setBackgroundColor(getColor(mCtx, color.colorAccent))
-
         return view
     }
 

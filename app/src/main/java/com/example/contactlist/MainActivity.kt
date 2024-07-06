@@ -19,19 +19,18 @@ import androidx.viewpager2.widget.ViewPager2
 
 
 
+
 //https://stackoverflow.com/questions/14678593/the-application-may-be-doing-too-much-work-on-its-main-thread
 //https://developer.android.com/guide/fragments/communicate
-/**
- * The number of pages (wizard steps) to show in this demo.
- */
-private const val NUM_PAGES = 3
+private const val NUM_PAGES = 3 // The number of pages to show
 
+//TODO: https://developer.android.com/studio/publish/preparing
 class MainActivity : AppCompatActivity(), InputFragment.OnListFragmentInteractionListener,
     BlankFragment.OnFragmentInteractionListener, DataPassListener {
 
     private var softInputMode:Int? = null
 
-    /**
+    /*
      * The pager widget, which handles animation and allows swiping horizontally to access previous
      * and next wizard steps.
      */
@@ -63,8 +62,6 @@ class MainActivity : AppCompatActivity(), InputFragment.OnListFragmentInteractio
 
         pagechange_register()
 
-
-
         //https://stackoverflow.com/questions/56808828/how-do-i-access-sqlite-db-in-an-activity-from-inside-a-fragment-using-kotlin
         try {
             DBHelper.getInstance(this)
@@ -75,6 +72,12 @@ class MainActivity : AppCompatActivity(), InputFragment.OnListFragmentInteractio
             builder.setMessage("Could not create a database connection")
         }
     }
+
+    override fun onDestroy() {
+        DBHelper.close()
+        super.onDestroy()
+    }
+
 
     private fun pagechange_register() {
 
@@ -112,21 +115,6 @@ class MainActivity : AppCompatActivity(), InputFragment.OnListFragmentInteractio
 
 //https://www.androiddesignpatterns.com/2013/04/retaining-objects-across-config-changes.html
 
-    //TODO: cannot switch between portrait/landscape without crashing - CHECK
-    /*
-    override fun onConfigurationChanged(newConfig: Configuration) {
-        super.onConfigurationChanged(newConfig)
-
-        // Checks the orientation of the screen
-        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            setContentView(R.layout.activity_main)
-
-        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
-            setContentView(R.layout.activity_main)
-
-        }
-    }*/
-
     fun backbutton(){
         if(mPager.currentItem!=0)
             mPager.currentItem=0//0 = InputFragment
@@ -136,20 +124,6 @@ class MainActivity : AppCompatActivity(), InputFragment.OnListFragmentInteractio
             toupdate.actualize()
             //super.onBackPressed()
         }
-        val checker=  mPager.adapter as ScreenSlideViewPager2
-        var checker2 = checker.createFragment(1) as BlankFragment
-        checker2.isonUpdate(false)
-    }
-
-    fun createbutton(){
-        if(mPager.currentItem==1)//1 = BlankFragment
-            mPager.currentItem=0//0 = InputFragment
-
-        if(mPager.currentItem==0){
-            val toupdate = (mPager.adapter as ScreenSlideViewPager2).createFragment(0) as InputFragment
-            toupdate.actualize()
-        }
-
         val checker=  mPager.adapter as ScreenSlideViewPager2
         var checker2 = checker.createFragment(1) as BlankFragment
         checker2.isonUpdate(false)
@@ -282,12 +256,31 @@ class MainActivity : AppCompatActivity(), InputFragment.OnListFragmentInteractio
         }
     }
 
+
+    /** used to pass Contact data from one fragment to another
+     *
+     * @param Contact object containing data
+     * */
     override fun passData(data: Contact) {
         gotoform()
         val checker=  mPager.adapter as ScreenSlideViewPager2
         var checker2 = checker.createFragment(1) as BlankFragment
 
         return checker2.updating(data)
+    }
+
+    fun createbutton(){
+        if(mPager.currentItem==1)//1 = BlankFragment
+            mPager.currentItem=0//0 = InputFragment
+
+        if(mPager.currentItem==0){
+            val toupdate = (mPager.adapter as ScreenSlideViewPager2).createFragment(0) as InputFragment
+            toupdate.actualize()
+        }
+
+        val checker=  mPager.adapter as ScreenSlideViewPager2
+        var checker2 = checker.createFragment(1) as BlankFragment
+        checker2.isonUpdate(false)
     }
 
     fun openimagegallery(activityResult: ActivityResultLauncher<Intent>, context: Context){

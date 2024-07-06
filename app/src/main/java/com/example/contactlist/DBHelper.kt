@@ -60,6 +60,11 @@ class DBHelper(context: Context): SQLiteOpenHelper(context, DATABASE_NAME, null,
 
             return instance!!
         }
+
+        fun close() {
+            this.close()
+            TODO("Not yet implemented")
+        }
     }
 
     override fun onCreate(p0: SQLiteDatabase?) {
@@ -88,9 +93,9 @@ class DBHelper(context: Context): SQLiteOpenHelper(context, DATABASE_NAME, null,
         contentValues.put(CONTACTS_COLUMN_BIRTHDATE, contact.birthdate)
         contentValues.put(CONTACTS_COLUMN_EDITDATE, contact.edited)
 
-      if(contact.image?.firstOrNull()!=null)
-          contentValues.put(CONTACTS_COLUMN_IMGDATA , contact.image)
-/*      TODO:optimized?
+      if(contact.image?.firstOrNull()!=null)  //TODO: causes bug
+         contentValues.put(CONTACTS_COLUMN_IMGDATA , contact.image)
+/*
 https://www.vogella.com/tutorials/AndroidSQLite/article.html
         db.beginTransaction();
         try {

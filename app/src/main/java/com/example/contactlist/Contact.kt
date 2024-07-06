@@ -33,8 +33,6 @@ class Contact{
     }
 
     constructor(){
-
-
     }
 
     constructor(cId: Int, surname: String, famname: String, adress: String, userEmail: String, telephone: String, birthdate: String, edited: String){

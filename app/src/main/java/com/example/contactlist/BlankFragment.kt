@@ -1,9 +1,12 @@
 package com.example.contactlist
 
+import android.Manifest
 import android.app.Activity
 import android.app.Dialog
+import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
@@ -18,11 +21,17 @@ import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.checkSelfPermission
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.graphics.drawable.toDrawable
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
 import java.io.ByteArrayOutputStream
+import java.io.InputStream
 import java.util.*
 
 /**
@@ -64,13 +73,36 @@ class BlankFragment : Fragment(){
     lateinit var delete_date:ImageView
 
 
-
     var updated:Boolean = false
 
     //https://stackoverflow.com/questions/61455381/how-to-replace-startactivityforresult-with-activity-result-apis
 
 
+    val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            val gallery =
+                Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
+            resultLauncher.launch(gallery)
+            // PERMISSION GRANTED
+        } else {
+            // PERMISSION NOT GRANTED
+
+        }
+    }
+
+    private fun startRedPermissionRequest() {
+        requestPermissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
+
+    }
+
     var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+
+
+        //val permission = one?.let { checkSelfPermission(it, Manifest.permission.READ_EXTERNAL_STORAGE) }
+
+
         if (result.resultCode == Activity.RESULT_OK) {
             // There are no request codes
             val data: Intent? = result.data
@@ -93,16 +125,16 @@ class BlankFragment : Fragment(){
 
                    //img.setImageDrawable(BitmapDrawable(resources,decodeSampledBitmapFromResource(draw, R.id.imageButton, 100, 100)))
                }
-
-
                //img.setImageDrawable(draw)
            }
         }
     }
 
+
+
+
     fun openSomeActivityForResult() {
-        val gallery = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
-        resultLauncher.launch(gallery)
+        startRedPermissionRequest()
     }
 
 
@@ -475,39 +507,6 @@ class BlankFragment : Fragment(){
         cancel!!.setOnClickListener {
 
             reset()
-            /*
-            surname = view.findViewById(R.id.surname) as EditText
-            surname.setText(null) //clear the value of the text
-            surname.setHint(R.string.insert)//then refill the hint with initial value
-
-            familyname = view.findViewById(R.id.familyname) as EditText
-            familyname.setText(null)
-            familyname.setHint(R.string.insert)
-
-            adress = view.findViewById(R.id.adress) as EditText
-            adress.setText(null)
-            adress.setHint(R.string.insert)
-
-            email = view.findViewById(R.id.email) as EditText
-            email.setText(null)
-            email.setHint(R.string.insert)
-
-            telephone = view.findViewById(R.id.tel) as EditText
-            telephone.setText(null)
-            telephone.setHint(R.string.insert)
-
-            birth = view.findViewById(R.id.birth) as EditText
-            birth.setText(null)
-            birth.setHint(R.string.insert)
-
-
-            edited = view.findViewById(R.id.textViewEdit) as TextView
-            edited.setText(null)
-            edited.setHint("")
-
-            img.setImageResource(R.mipmap.ic_contact_round)
-*/
-            //(activity as MainActivity).backbutton() redundant
 
         }
 

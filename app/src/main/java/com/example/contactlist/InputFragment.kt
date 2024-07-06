@@ -58,10 +58,10 @@ class InputFragment : Fragment() {
         field = view.findViewById<View>(R.id.searchtext) as EditText
         entries = view.findViewById<View>(R.id.listentries) as ListView
         del = view.findViewById<View>(R.id.delete) as Button
-        refresh =  view.findViewById<View>(R.id.refresh) as Button
-        upd =  view.findViewById<View>(R.id.update) as Button
+        //refresh =  view.findViewById<View>(R.id.refresh) as Button
+        //upd =  view.findViewById<View>(R.id.update) as Button
 
-//https://stackoverflow.com/questions/46011223/how-to-get-the-selected-item-from-listview-in-kotlin
+        //https://stackoverflow.com/questions/46011223/how-to-get-the-selected-item-from-listview-in-kotlin
         //https://stackoverflow.com/questions/13122683/how-to-implement-onclick-in-a-listview
         entries.onItemClickListener =
             OnItemClickListener { adapter, arg1, position, id ->
@@ -114,11 +114,9 @@ class InputFragment : Fragment() {
            getList()
        }
 
-       refresh!!.setOnClickListener { actualize() }
+       //refresh!!.setOnClickListener { actualize() }
 
-        upd!!.setOnClickListener {
-            getList()
-        }
+       // upd!!.setOnClickListener { getList() }
 
         //https://guides.codepath.com/android/Basic-Event-Listeners#edittext-common-listeners
        field!!.addTextChangedListener(object : TextWatcher {

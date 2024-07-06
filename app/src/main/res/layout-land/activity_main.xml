@@ -47,30 +47,10 @@
         <Button
             android:id="@+id/delete"
             android:layout_width="wrap_content"
-            android:layout_weight="0.2"
             android:layout_height="wrap_content"
-            android:text="delete DBD" />
+            android:layout_weight="0.2"
+            android:text="delete entries" />
 
-        <Button
-            android:id="@+id/refresh"
-            android:layout_width="wrap_content"
-            android:layout_weight="0.2"
-            android:layout_height="wrap_content"
-            android:text="refresh DB" />
-
-        <Button
-            android:id="@+id/showDB"
-            android:layout_width="wrap_content"
-            android:layout_weight="0.2"
-            android:layout_height="wrap_content"
-            android:text="show DB" />
-
-        <Button
-            android:id="@+id/update"
-            android:layout_width="wrap_content"
-            android:layout_weight="0.2"
-            android:layout_height="wrap_content"
-            android:text="update DB" />
     </TableRow>
 
     <!--

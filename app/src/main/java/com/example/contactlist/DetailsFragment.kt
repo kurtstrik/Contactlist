@@ -117,7 +117,6 @@ class DetailsFragment : Fragment() {
 
         }
 
-
         /*
         tablayout = view.findViewById(R.id.tablayout) as TabLayout
         tablayout.addTab(tablayout.newTab().setText("Tab 1"))

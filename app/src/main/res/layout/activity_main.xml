@@ -12,12 +12,12 @@
 
         android:id="@+id/searchtext"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="0.1"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:hint="@string/search"
+        android:imeOptions="flagNoExtractUi"
         android:inputType="textPersonName"
         android:singleLine="true"
-        android:imeOptions="flagNoExtractUi"
 
         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
@@ -25,55 +25,36 @@
     <ListView
         android:id="@+id/listentries"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="9.8"
+        android:layout_height="0dp"
+        android:layout_weight="8"
         tools:listitem="@layout/fragment_input_list">
 
     </ListView>
 
     <TableRow
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="0.1"
-        android:gravity="bottom">
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center">
 
         <Button
             android:id="@+id/searchfield"
-            android:layout_width="wrap_content"
-            android:layout_weight="0.2"
-
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+
+            android:layout_weight="0.2"
             android:onClick="newclicked"
-            android:text="@string/newcontact" />
+            android:text="@string/newcontact"
+            android:textSize="12sp" />
 
         <Button
             android:id="@+id/delete"
-            android:layout_width="wrap_content"
-            android:layout_weight="0.2"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="delete DBD" />
+            android:layout_weight="0.2"
+            android:text="delete entries"
+            android:textSize="12sp" />
 
-        <Button
-            android:id="@+id/refresh"
-            android:layout_width="wrap_content"
-            android:layout_weight="0.2"
-            android:layout_height="wrap_content"
-            android:text="refresh DB" />
-
-        <Button
-            android:id="@+id/showDB"
-            android:layout_width="wrap_content"
-            android:layout_weight="0.2"
-            android:layout_height="wrap_content"
-            android:text="show DB" />
-
-        <Button
-            android:id="@+id/update"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.2"
-            android:onClick="updateclick"
-            android:text="update DB" />
     </TableRow>
 
     <!--
