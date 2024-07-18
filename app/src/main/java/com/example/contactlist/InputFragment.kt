@@ -129,7 +129,7 @@ class InputFragment : Fragment() {
 
                } else {
                    val con = Contact(s.toString(), s.toString())
-                   val newlist = (activity as MainActivity).search(con)
+                   val newlist = (activity as MainActivity).search(con) // TODO: search lowercase for uppercase - error
                    entries.adapter = CustomAdapter(mContext, R.layout.fragment_input, newlist)
                }
            }

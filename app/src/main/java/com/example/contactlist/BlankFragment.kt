@@ -15,23 +15,14 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.DisplayMetrics
 import android.view.*
 import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.checkSelfPermission
-import androidx.core.graphics.drawable.toBitmap
-import androidx.core.graphics.drawable.toDrawable
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.runBlocking
 import java.io.ByteArrayOutputStream
-import java.io.InputStream
 import java.util.*
 
 /**
@@ -596,6 +587,9 @@ class BlankFragment : Fragment(){
 
         date_clicked = false
 
+
+        // TODO: remove virtual keyboard again
+        //activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         (activity as MainActivity).backbutton()
 
     }

@@ -1,14 +1,12 @@
 package com.example.contactlist
 
-import android.annotation.SuppressLint
+
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.TextView

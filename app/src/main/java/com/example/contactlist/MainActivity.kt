@@ -11,7 +11,6 @@ import android.view.View
 import android.view.WindowManager
 import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.get
 import androidx.fragment.app.*
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
@@ -202,7 +201,7 @@ class MainActivity : AppCompatActivity(), InputFragment.OnListFragmentInteractio
 
         todetails()
 
-        frag.receiveData(con)//TODO:bug
+        frag.receiveData(con)
     }
 
     //https://stackoverflow.com/questions/8094715/how-to-catch-event-with-hardware-back-button-on-android/8094821

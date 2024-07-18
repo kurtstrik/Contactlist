@@ -11,8 +11,6 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.Fragment
 import com.example.contactlist.BlankFragment.OnFragmentInteractionListener
-//import com.google.android.material.tabs.TabLayout
-import java.util.*
 
 /**
  * hier werden die Daten fuer die Kontakte erstellen/bearbeiten vom User eingegeben
