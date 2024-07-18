@@ -3,10 +3,8 @@ package com.example.contactlist
 import android.Manifest
 import android.app.Activity
 import android.app.Dialog
-import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
@@ -16,6 +14,7 @@ import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.*
+import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
@@ -112,7 +111,9 @@ class BlankFragment : Fragment(){
                    val usableHeight: Int = metrics.heightPixels
 */
                     //TODO:readme: https://developer.android.com/develop/ui/views/graphics
-                    Glide.with(this).load(draw).override(imgwidth, imgheight).optionalCircleCrop().into(img)
+                    Glide.with(this).load(draw).override(imgwidth, imgheight).optionalCircleCrop().into(
+                        img
+                    )
 
                    //img.setImageDrawable(BitmapDrawable(resources,decodeSampledBitmapFromResource(draw, R.id.imageButton, 100, 100)))
                }
@@ -463,13 +464,13 @@ class BlankFragment : Fragment(){
                 )
             }
             if(updated) {
-                val result = (activity as MainActivity).updatecontact(contactprop)//TODO:date change not actually happening
+                val result = (activity as MainActivity).updatecontact(contactprop)
 
                 if (result == 1) {
 
 
                     (activity as MainActivity).actualizing()
-                    updated = false//TODO: was tun wenn wiederholte Eingabe erfolgt? update nur false wenn screen verlassen wird
+                    updated = false
                     reset()
                     //(activity as MainActivity).backbutton()
                     Toast.makeText(mContext, R.string.updated, Toast.LENGTH_SHORT).show()
@@ -513,7 +514,6 @@ class BlankFragment : Fragment(){
             //DatePickerDialog not a compatible option because of API versions
             //https://developer.android.com/develop/ui/views/components/dialogs
 
-            //TODO:check here if date was changed or not
             var dialog = Dialog(mContext)
             dialog.setContentView(R.layout.datedialog)
 
@@ -522,7 +522,7 @@ class BlankFragment : Fragment(){
             okay.setOnClickListener{
                 val dateTime:Calendar = getDateValue(dialog)
                 birth.setText(
-                    "" + dateTime.get(Calendar.DAY_OF_MONTH) + "." + (dateTime.get(Calendar.MONTH)+1) + "." + dateTime.get(
+                    "" + dateTime.get(Calendar.DAY_OF_MONTH) + "." + (dateTime.get(Calendar.MONTH) + 1) + "." + dateTime.get(
                         Calendar.YEAR
                     )
                 )
@@ -553,7 +553,6 @@ class BlankFragment : Fragment(){
 
     public fun reset(){
 
-        //TODO:implement correctly
         surname = view?.findViewById(R.id.surname) as EditText
         surname.setText(null) //clear the value of the text
         surname.setHint(R.string.insert)//then refill the hint with initial value
@@ -588,8 +587,9 @@ class BlankFragment : Fragment(){
         date_clicked = false
 
 
-        // TODO: remove virtual keyboard again
-        //activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
+        var imm:InputMethodManager = this.context?.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(view?.windowToken, 0)
         (activity as MainActivity).backbutton()
 
     }
@@ -658,7 +658,6 @@ class BlankFragment : Fragment(){
         val editcurrent =  view?.findViewById(R.id.textViewEdit) as TextView
         editcurrent?.setText(con.edited)
 
-        // TODO: when wanting to change the img, the stored img should be displayed on BlankFragment Screen too
         val imgcurrent = view?.findViewById(R.id.imageButton) as ImageButton
 
         if(con.image!=null) {
@@ -675,7 +674,7 @@ class BlankFragment : Fragment(){
            val dat=  dialog.findViewById(R.id.picker) as DatePicker
 
            var value = Calendar.getInstance()
-            value.set(dat.year, dat.month , dat.dayOfMonth)
+            value.set(dat.year, dat.month, dat.dayOfMonth)
 
            return value
     }
@@ -691,7 +690,6 @@ class BlankFragment : Fragment(){
          *
          * @return A new instance of fragment InputFragment.
          */
-        // TODO: Rename and change types and number of parameters
         @JvmStatic
         fun newInstance() = BlankFragment().apply {
             val fragment = BlankFragment()

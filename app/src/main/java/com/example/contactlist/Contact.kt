@@ -109,14 +109,16 @@ class Contact{
         val search2 = arg.famname
 
         if(search1.length>0 && surname.contains(search1,true)){
-            val start = spanStrings.indexOf(search1)
+            val start = spanStrings.indexOf(search1,0, true)
 
-
-            spanStrings.setSpan(markup, start, (start+search1.length), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            if (start >= 0)
+                spanStrings.setSpan(markup, start, (start+search1.length), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         }
         else if(search2.length>0 && famname.contains(search2,true)){
-            val start = spanStrings.indexOf(search2)
-            spanStrings.setSpan(markup, start, (start+search2.length), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            val start = spanStrings.indexOf(search2, 0, true)
+
+            if (start >= 0)
+                spanStrings.setSpan(markup, start, (start+search2.length), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         }
 
 

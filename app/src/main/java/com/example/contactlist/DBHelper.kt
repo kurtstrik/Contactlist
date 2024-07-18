@@ -176,11 +176,12 @@ https://www.vogella.com/tutorials/AndroidSQLite/article.html
     fun searchContact(contact: Contact):List<Contact>{
         val conList:MutableList<Contact> = ArrayList()
 
-        val temp = Array(2){contact.surname+"%"; "%"+contact.famname+"%"}// falls Familienname auch beachtet wird | if familyname is considered too
+        val temp = Array(2){"%"+contact.surname+"%"; "%"+contact.famname+"%"}// falls Familienname auch beachtet wird | if familyname is considered too
 
         val db = this.readableDatabase
         var cursor: Cursor? = null
         try{
+            //TODO: fix here
             cursor = db.rawQuery("Select * from $CONTACTS_TABLE_NAME where $CONTACTS_COLUMN_SURNAME like ? or $CONTACTS_COLUMN_FAMILYNAME like ? ", temp)// falls Familienname auch beachtet wird
 
         }catch (e: SQLiteException) {

@@ -115,6 +115,7 @@ class MainActivity : AppCompatActivity(), InputFragment.OnListFragmentInteractio
 //https://www.androiddesignpatterns.com/2013/04/retaining-objects-across-config-changes.html
 
     fun backbutton(){
+
         if(mPager.currentItem!=0)
             mPager.currentItem=0//0 = InputFragment
 

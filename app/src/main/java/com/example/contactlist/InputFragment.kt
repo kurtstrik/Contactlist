@@ -1,6 +1,7 @@
 package com.example.contactlist
 
 
+import android.app.Activity
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
@@ -9,6 +10,7 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import android.widget.AdapterView.OnItemClickListener
 import androidx.appcompat.app.AlertDialog
@@ -65,6 +67,9 @@ class InputFragment : Fragment() {
         //https://stackoverflow.com/questions/13122683/how-to-implement-onclick-in-a-listview
         entries.onItemClickListener =
             OnItemClickListener { adapter, arg1, position, id ->
+
+                var imm: InputMethodManager = this.context?.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.hideSoftInputFromWindow(view?.windowToken, 0)
                 val select = adapter.getItemAtPosition(position) as Contact
                 (activity as MainActivity).detailsData(select)
             }
@@ -83,6 +88,8 @@ class InputFragment : Fragment() {
 
                 when(which){
                     0 -> { //1st element of Options array - edit
+                        var imm:InputMethodManager = this.context?.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+                        imm.hideSoftInputFromWindow(view?.windowToken, 0)
                         (activity as MainActivity).passData(selectedItem)
                     }
                     1 -> {//2nd element of Options array - delete
@@ -186,7 +193,6 @@ class InputFragment : Fragment() {
     }
 
     interface OnListFragmentInteractionListener {
-        // TODO: Update argument type and name
         fun onListFragmentInteraction(uri: Uri?)
     }
 
